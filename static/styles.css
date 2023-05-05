@@ -1,0 +1,88 @@
+.gaycontainer {
+	max-width: 400px;
+	margin: 0 auto;
+	margin-top: 30px;
+	display: flex;
+	justify-content: center
+	}
+	
+.youtubelink .icon {
+	width: 20px;
+	color: #fc0000;
+	display: flex;
+	flex-shrink: 0;
+}
+
+.youtubelink{
+	font-size: 18px;
+	font-family: "Roboto", sans-serif;
+	color: #222;
+	line-height: 1.8;
+	display: flex;
+	gap: 16px;
+	margin: 8px 0;
+	padding: 4px 32px;
+	cursor: pointer;
+	transition: all 600ms ease;
+	
+}
+
+.youtubelink:hover{
+	background: #d9d9d9;	
+}
+
+.overlay{
+	position: fixed;
+	inset:0;
+	background: rgba(0, 0, 0, 0.6);	
+	opacity:0;
+	pointer-events: none;
+	transition: all 600ms ease;
+}
+
+.overlay.active{
+	opacity: 1; 
+	pointer-events: auto;
+	transition: all 600ms ease;
+}
+
+
+.videopopup{
+	position: fixed;
+	width: 80%;
+	left: 50%; 
+	transform: translate(-50%, -100%);
+	transition: all 600ms ease;
+	
+}
+
+.overlay.active .videopopup{
+	transform: translate(-50%, 3%);
+	
+}
+
+.videopopup iframe{
+	width: 100%;
+	aspect-ratio: 16/9;
+}
+
+.datecard{
+  width: 21%;
+  position: absolute;
+  top: 90%;
+  left: 70%;
+  transform: translate(-60%, -50%);
+}
+
+
+
+.form-select{
+  margin-bottom: 10px;
+}
+
+
+
+
+
+
+

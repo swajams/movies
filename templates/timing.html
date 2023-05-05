@@ -1,0 +1,29 @@
+{% extends "movies.html" %}
+{% block movies %}
+
+	
+	<div class="card mb-3" style="max-width: 1000px;">
+		<div class="row g-0">
+			<div class="col-md-4">
+				<img src="{{ data.IMG }}" class="card-img-top" alt="...">
+			</div>
+			<div class="col-md-8">
+			<div class="card-body">	
+			<h6 class="card-title">{{ data.Name }}</h6>
+			<h6 class="card-title">{{ date }}</h6>
+		
+
+<form method="POST" action="{{ url_for('sessioncontroller', movieID = data.movieid, date=date) }}">
+  {% for t in timing %}
+  <button class="btn btn-secondary" name="selected_time" value="{{ t }}" type="submit">{{ t }}</button>
+  {% endfor %}
+</form>
+
+	
+	
+	
+			</div>	
+		</div>
+	</div>	
+</div>
+{% endblock %}

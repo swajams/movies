@@ -1,0 +1,134 @@
+{% extends "movies.html" %}
+
+{% block movies %}
+
+<h1>Movie Details</h1>
+
+
+
+
+
+
+
+	<div class="card mb-3" style="max-width: 1000px;">
+		<div class="row g-0">
+			<div class="col-md-4">
+				<img src="{{ data.IMG }}" class="card-img-top" alt="...">
+			</div>
+			<div class="col-md-8">
+			<div class="card-body">	
+			<h6 class="card-title">{{ data.Name }}</h6>
+			<p class="card-text">Synopsis: {{ data.Description }}</p>
+			<p class="card-text">Year: {{ data.Year }}</p>
+			<p class="card-text">Cast: {{ data.Actors }}</p>
+			<p class="card-text">Genre: 
+			{% for genre in data.Genre.split(',') %}
+				<span class="badge rounded-pill text-bg-secondary">{{ genre.strip() }}</span>
+			{% endfor %}
+			</p>
+			<p class="card-text">Runtime: {{ data.Duration }}</p>
+			<p class="card-text">Rating: {{ data.Rating }}/5</p>	  
+			
+			
+			
+			
+			
+	
+<form method="POST" action="{{ url_for('returntiming', movieID=data.movieid) }}">
+  <div class="datecard">
+    <div class="card-body">
+      <select class="form-select" id="dateDropdown" name="selected_date">
+        {% set dates = [] %}
+        {% for t in T %}
+          {% if t.dateTime.date() not in dates %}
+            {% set _ = dates.append(t.dateTime.date()) %}
+            <option value="{{ t.dateTime.date().strftime('%Y-%m-%d') }}">{{ t.dateTime.date().strftime('%d-%m-%Y') }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-primary">Show Times</button>
+    </div>
+  </div>
+</form>
+	
+			
+			
+			
+			
+			
+			
+			<div class = "gaycontainer"> 		
+				<div class = "youtubelink"> 
+					<div class = "icon">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+						stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+						<path stroke-linecap="round" 
+						d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72
+						M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 
+						002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
+						</svg>
+					</div>
+						Click here to watch trailer	
+					</div>
+				</div>
+			<div class="overlay">
+				<div class = "videopopup"> 
+					<iframe
+					src="{{ data.Trailer }}"  
+					title="{{ data.Name }}" 
+					frameborder="0"
+					allow=" clipboard-write; encrypted-media; picture-in-picture; web-share"
+					allowfullscreen>
+					</iframe>	
+	
+			</div>		
+				</div>
+					<script>
+						const YTPlayerOverlay = document.querySelector(".overlay");
+						const YTlinks = document.querySelectorAll(".youtubelink");
+
+						YTlinks.forEach((link) => {
+							link.addEventListener("click", () => {
+								YTPlayerOverlay.classList.add("active");
+							});
+						});
+
+						YTPlayerOverlay.addEventListener("click", () => {
+							YTPlayerOverlay.classList.remove("active");
+						});
+					</script>
+			</div>
+			</div>	
+			
+
+		</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+</div>	
+	
+
+
+
+
+
+
+{% endblock %}
+
+
