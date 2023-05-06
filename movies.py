@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
-from entity import getmovies, moviedetails, searchbar, getshowdate, getshowtime, getsessionid
+from entity import getmovies, moviedetails, searchbar, getshowdate, getshowtime, getsessionid, getReview, getAvgRating
 
 
 app = Flask(__name__)
@@ -14,9 +14,14 @@ def main():
 def movd(movieID):
     dates = getshowdate(movieID)
     movieD = moviedetails(movieID)
+    Review = getReview(movieID)
+    AvgRating = getAvgRating(movieID)
+    Rating = round(AvgRating[0], 1)
+    print(Review)
+    print(Rating)  
     if not movieD:
         abort(404)
-    return render_template("movdetails.html", data = movieD, T = dates)
+    return render_template("movdetails.html", data = movieD, T = dates, Review = Review, Rating = Rating )
 
 @app.route("/search", methods=['POST'])
 def search():

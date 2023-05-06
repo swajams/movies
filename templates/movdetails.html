@@ -4,12 +4,6 @@
 
 <h1>Movie Details</h1>
 
-
-
-
-
-
-
 	<div class="card mb-3" style="max-width: 1000px;">
 		<div class="row g-0">
 			<div class="col-md-4">
@@ -27,35 +21,24 @@
 			{% endfor %}
 			</p>
 			<p class="card-text">Runtime: {{ data.Duration }}</p>
-			<p class="card-text">Rating: {{ data.Rating }}/5</p>	  
-			
-			
-			
-			
-			
-	
-<form method="POST" action="{{ url_for('returntiming', movieID=data.movieid) }}">
-  <div class="datecard">
-    <div class="card-body">
-      <select class="form-select" id="dateDropdown" name="selected_date">
-        {% set dates = [] %}
-        {% for t in T %}
-          {% if t.dateTime.date() not in dates %}
-            {% set _ = dates.append(t.dateTime.date()) %}
-            <option value="{{ t.dateTime.date().strftime('%Y-%m-%d') }}">{{ t.dateTime.date().strftime('%d-%m-%Y') }}</option>
-          {% endif %}
-        {% endfor %}
-      </select>
-      <button type="submit" class="btn btn-primary">Show Times</button>
-    </div>
-  </div>
-</form>
-	
-			
-			
-			
-			
-			
+			<!-- <p class="card-text">Rating: {{ data.Rating }}/5</p>	   -->
+						
+			<form method="POST" action="{{ url_for('returntiming', movieID=data.movieid) }}">
+			  <div class="datecard">
+				<div class="card-body">
+				  <select class="form-select" id="dateDropdown" name="selected_date">
+					{% set dates = [] %}
+					{% for t in T %}
+					  {% if t.dateTime.date() not in dates %}
+						{% set _ = dates.append(t.dateTime.date()) %}
+						<option value="{{ t.dateTime.date().strftime('%Y-%m-%d') }}">{{ t.dateTime.date().strftime('%d-%m-%Y') }}</option>
+					  {% endif %}
+					{% endfor %}
+				  </select>
+				  <button type="submit" class="btn btn-primary">Show Times</button>
+				</div>
+			  </div>
+			</form>
 			
 			<div class = "gaycontainer"> 		
 				<div class = "youtubelink"> 
@@ -71,6 +54,7 @@
 						Click here to watch trailer	
 					</div>
 				</div>
+				
 			<div class="overlay">
 				<div class = "videopopup"> 
 					<iframe
@@ -78,52 +62,50 @@
 					title="{{ data.Name }}" 
 					frameborder="0"
 					allow=" clipboard-write; encrypted-media; picture-in-picture; web-share"
-					allowfullscreen>
+					allowfullscreen
+					id="youtube-video">
 					</iframe>	
 	
-			</div>		
-				</div>
-					<script>
+				</div>		
+			</div>
+
+				<script>
+						const video = document.getElementById("youtube-video");
 						const YTPlayerOverlay = document.querySelector(".overlay");
 						const YTlinks = document.querySelectorAll(".youtubelink");
+						
 
 						YTlinks.forEach((link) => {
 							link.addEventListener("click", () => {
 								YTPlayerOverlay.classList.add("active");
+								 <!-- video.src = video.src + "?autoplay=1"; -->
 							});
 						});
 
 						YTPlayerOverlay.addEventListener("click", () => {
 							YTPlayerOverlay.classList.remove("active");
+							video.src = video.src.replace("?autoplay=1", "");
+							<!-- video.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*'); -->
 						});
-					</script>
+					</script>  
+
+
 			</div>
-			</div>	
-			
+			</div>				
 
 		</div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-
 </div>	
 	
-
+<ul class="list-group">
+	<li class="list-group-item">Reviews</li> 
+	<li class="list-group-item">Rating: {{ Rating }} / 5</li>
+	
+		{% for r in Review %} 	
+			<li class="list-group-item"><h6> {{ r.review }} </h6></li>
+		{% endfor %}   
+</ul>	
+		
 
 
 

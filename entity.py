@@ -36,10 +36,17 @@ def getshowtime(movieID, date):
 def getsessionid(movieID, date, selected_timing):
     with engine.connect() as conn:
         session = conn.execute(text(f"SELECT sessionID FROM movietest.session WHERE MovieID = '{ movieID }' AND dateTime LIKE '%{ date }%' AND dateTime LIKE '%{ selected_timing }%' "))
-        print("entity")
-        print(session)
-        print("entity end")
         return session.fetchall()
+        
+def getReview(movieID):
+    with engine.connect() as conn:
+        R = conn.execute(text(f"SELECT review FROM movietest.ratingreview WHERE MovieID = '{ movieID }'"))
+        return R.fetchall()
+
+def getAvgRating(movieID):
+    with engine.connect() as conn:
+        Rating =  conn.execute(text(f"SELECT AVG(rating) FROM movietest.ratingreview WHERE MovieID = '{ movieID }' "))
+        return Rating.fetchone()
          
          
          

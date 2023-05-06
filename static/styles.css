@@ -1,3 +1,25 @@
+body{
+	background-color: #1B1C1E;
+}
+.card{
+	background-color: #1B1C1E;
+}
+
+.card-title{
+	color: #f5f5dc;
+}
+p{
+	color: beige;
+	text-align: left;
+}
+
+h1{
+	color: beige;
+}
+.list-group-item{
+	background-color: #1B1C1E;
+	color: beige;
+}
 .gaycontainer {
 	max-width: 400px;
 	margin: 0 auto;
@@ -16,19 +38,24 @@
 .youtubelink{
 	font-size: 18px;
 	font-family: "Roboto", sans-serif;
-	color: #222;
+	color: beige;
 	line-height: 1.8;
 	display: flex;
 	gap: 16px;
 	margin: 8px 0;
 	padding: 4px 32px;
 	cursor: pointer;
-	transition: all 600ms ease;
+	transition: all 400ms ease;
 	
 }
 
+.youtube-video{
+	transition: all 400ms ease;
+}
+
 .youtubelink:hover{
-	background: #d9d9d9;	
+	background: #d9d9d9;
+	color: 1B1C1E;	
 }
 
 .overlay{
@@ -37,13 +64,14 @@
 	background: rgba(0, 0, 0, 0.6);	
 	opacity:0;
 	pointer-events: none;
-	transition: all 600ms ease;
+	transition: all 400ms ease;
+	z-index: 9999;
 }
 
 .overlay.active{
 	opacity: 1; 
 	pointer-events: auto;
-	transition: all 600ms ease;
+	transition: all 400ms ease;
 }
 
 
@@ -79,7 +107,6 @@
 .form-select{
   margin-bottom: 10px;
 }
-
 
 
 
