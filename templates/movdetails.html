@@ -96,15 +96,43 @@
 		</div>
 
 </div>	
-	
+
+
+
+
+
 <ul class="list-group">
 	<li class="list-group-item">Reviews</li> 
-	<li class="list-group-item">Rating: {{ Rating }} / 5</li>
+	<li class="list-group-item">
+		Rating: {{ Rating }} / 5
+		{% if Rating is not none %}
+			<div class="progress" role="progressbar" aria-label="Rating" aria-valuenow="{{ Rating|float*20 }}" aria-valuemin="0" aria-valuemax="100">
+				<div class="progress-bar bg-warning" style="width: {{ Rating|float*20 }}%"></div>
+			</div>
+		{% endif %}
+	</li>
+	{% for r in Review %} 	
+		<li class="list-group-item"><h6> {{ r.review }} </h6></li>
+	{% endfor %}   
+</ul>
+
+
+
+
+
+
+
+<!-- <ul class="list-group"> -->
+	<!-- <li class="list-group-item">Reviews</li>  -->
+	<!-- <li class="list-group-item">Rating: {{ Rating }} / 5 -->
 	
-		{% for r in Review %} 	
-			<li class="list-group-item"><h6> {{ r.review }} </h6></li>
-		{% endfor %}   
-</ul>	
+	<!-- <div class="progress" role="progressbar" aria-label="Warning example" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"> -->
+	  <!-- <div class="progress-bar bg-warning" style="width: {{ Rating|float*20 }}%"></div> -->
+	<!-- </div></li> -->
+		<!-- {% for r in Review %} 	 -->
+			<!-- <li class="list-group-item"><h6> {{ r.review }} </h6></li> -->
+		<!-- {% endfor %}    -->
+<!-- </ul>	 -->
 		
 
 

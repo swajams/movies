@@ -16,12 +16,14 @@ def movd(movieID):
     movieD = moviedetails(movieID)
     Review = getReview(movieID)
     AvgRating = getAvgRating(movieID)
-    Rating = round(AvgRating[0], 1)
-    print(Review)
-    print(Rating)  
+    if AvgRating is not None:
+        Rate = round(AvgRating, 1)
+    else:
+        Rate = None
+   
     if not movieD:
         abort(404)
-    return render_template("movdetails.html", data = movieD, T = dates, Review = Review, Rating = Rating )
+    return render_template("movdetails.html", data = movieD, T = dates, Review = Review, Rating = Rate )
 
 @app.route("/search", methods=['POST'])
 def search():

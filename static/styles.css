@@ -74,7 +74,6 @@ h1{
 	transition: all 400ms ease;
 }
 
-
 .videopopup{
 	position: fixed;
 	width: 80%;
@@ -103,11 +102,18 @@ h1{
 }
 
 
-
 .form-select{
   margin-bottom: 10px;
 }
 
+:root, [data-bs-theme=light] {
+	--bs-border-color: #919191;
+}
+
+.progress, .progress-stacked {
+	background-color: #8d8d8d;
+	margin-top: 10px;
+}
 
 
 

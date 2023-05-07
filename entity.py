@@ -46,7 +46,7 @@ def getReview(movieID):
 def getAvgRating(movieID):
     with engine.connect() as conn:
         Rating =  conn.execute(text(f"SELECT AVG(rating) FROM movietest.ratingreview WHERE MovieID = '{ movieID }' "))
-        return Rating.fetchone()
+        return Rating.fetchone()[0]
          
          
          
