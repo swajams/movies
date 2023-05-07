@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+    <title>Seats</title>
+</head>
+<body onload="generateSeats();setOccupiedSeats()">
+    <div id="container">
+        <h2>{{ seatDetails[0].Name }}</h2>
+        <h4>{{ seatDetails[0].dateTime }}</h4>
+        <div id="legend" style="float:left; width:24%;border-style: solid; border-color: black;">
+            <h3>Legend</h3>
+            <img src="{{url_for('static', filename='seat-curr-avail.png')}}">
+            <b>Available</b>
+            <br/>
+            <br/>
+            <img src="{{url_for('static', filename='seat-curr-select.png')}}">
+            <b>Selected</b>
+            <br/>
+            <br/>
+            <img src="{{url_for('static', filename='seat-curr-unavail.png')}}">
+            <b>Unavailable</b>
+            <br/>
+            <br/>
+        </div>
+        <div id="selectSeat" style="float:right; width: 24%;border-style: solid; border-color: black; border-radius: 5px;">
+            <h3>Selected Seats</h3>
+            <div id="seatSelectID"></div>
+            <br/>
+            <div id="typeSelect">
+                <b>Adult ticket</b>
+                <input type="number" min="0" max="100" value = "0" id="adultTix" name = "adultTix" style="width:30px">
+                <br/>
+                <br/>
+                <b>Student ticket</b>
+                <input type="number" min="0" max="100" value = "0" id="studentTix" name = "studentTix" style="width:30px">
+                <br/>
+                <br/>
+                <b>Senior ticket</b>
+                <input type="number" min="0" max="100" value = "0" id="seniorTix" name = "seniorTix" style="width:30px">
+                <br/>
+                <br/>
+                <b>Child ticket</b>
+                <input type="number" min="0" max="100" value = "0" id="childTix" name = "childTix" style="width:30px">
+                <br/>
+                <br/>
+                <button onclick="sendJSON()" class="btn btn-sm btn-outline-secondary">Submit</button>
+            </div>
+        </div>
+        
+        <div id="seat" style="margin:0 auto; width: 50%;border-style: solid; border-color: black; background-color: black;">
+            <br/>
+            <b style="margin-left:auto; width:50%; margin-right:auto; display: block; text-align: center; color:white">Screen</b>
+            <img src="{{url_for('static', filename='screen-no-text.png')}}" style="margin-left:auto; width:50%; margin-right:auto; display: block;"/>
+        </div>
+
+    </div>
+    <script>
+        var selectedSeat = [];
+        const jsonData = {
+            "movieID" : '{{ seatDetails[0].movieID }}',
+            "title" : '{{ seatDetails[0].title }}',
+            "roomID" : '{{ seatDetails[0].roomID }}',
+            "dateTime" : '{{ seatDetails[0].dateTime }}',
+            "ticketType" : ' ',
+            "bookedSeats" : '  ',
+            "foodAndDrinks" : ' '
+        };
+        var occupupiedSeatQ = '{{ seatDetails[0].bookedSeats|tojson}}'
+        var occupiedSeatsJSON = occupupiedSeatQ.substring(1, occupupiedSeatQ.length - 1);
+        var occupiedSeats = JSON.parse(occupiedSeatsJSON)
+        console.log(occupiedSeats)
+        function generateSeats(){
+            var rowDict = {
+                1:"A",
+                2:"B",
+                3:"C",
+                4:"D",
+                5:"E",
+                6:"F",
+                7:"G",
+                8:"H",
+                9:"I",
+                10:"J",
+                11:"K",
+                12:"L",
+                13:"M",
+                14:"N",
+                15:"O",
+                16:"P",
+                17:"Q",
+                18:"R",
+                19:"S",
+                20:"T",
+                21:"U",
+                22:"V",
+                23:"W",
+                24:"X",
+                25:"Y",
+                26:"Z",
+            }
+            var seatRows = Number('{{ seatDetails[0].roomRow }}');
+            console.log(seatRows);
+            var seatColumn = Number('{{ seatDetails[0].roomCol }}');
+            console.log(seatColumn);
+            const table = document.createElement("table");
+            table.style.margin = 'auto';
+            const seatDiv = document.getElementById("seat");
+            for(let x = 0; x< seatRows; x++){
+
+                let tabR = document.createElement("tr");
+
+                let rowLableCell = document.createElement("td");
+                rowLableCell.innerHTML = rowDict[x+1];
+                rowLableCell.style.color = "white";
+                tabR.appendChild(rowLableCell);
+                for (let i=0; i<seatColumn; i++){
+                    let colId = i+1;
+                    let tabD = document.createElement("td");
+                    let image = document.createElement("img");
+                    image.setAttribute("src","{{url_for('static', filename='seat-curr-avail.png')}}");
+                    image.setAttribute("onclick","selectSeat(this)");
+                    image.setAttribute("id",rowDict[x+1]+colId)
+                    tabD.appendChild(image);
+                    tabR.appendChild(tabD);
+                }
+                table.appendChild(tabR);
+            }
+            const colIdRow = document.createElement("tr");
+            
+            for (let y = 0; y < seatColumn+1; y++){
+                let colIdCell = document.createElement("td");
+                    colIdCell.innerHTML = y;
+                    if(y == 0){
+                        
+                        colIdCell.style.color = "Black"
+                    }
+                    else{
+                        colIdCell.style.color = "White"
+                    }
+                    colIdRow.appendChild(colIdCell);
+
+
+                    
+
+
+                
+            }
+            table.appendChild(colIdRow);
+            seat.appendChild(table);
+
+        }
+
+        function setOccupiedSeats()
+        {
+            for(let i=0; i<occupiedSeats.length; i++)
+            {
+                let occupiedSeatImg = document.getElementById(occupiedSeats[i]);
+                console.log(occupiedSeats[i])
+                occupiedSeatImg.src = "{{url_for('static', filename='seat-curr-unavail.png')}}"; 
+            }
+        }
+
+        var totalLimit = 0; 
+        function selectSeat(image){
+            const seatSelectDiv = document.getElementById("seatSelectID");
+            if (image.getAttribute('src') === "{{url_for('static', filename='seat-curr-avail.png')}}"){
+                image.setAttribute('src', "{{url_for('static', filename='seat-curr-select.png')}}");
+                let selectedText = document.createElement("b");
+                selectedText.innerHTML = image.id+ " ";
+                selectedText.id = "selected-"+image.id
+                seatSelectDiv.appendChild(selectedText);
+                selectedSeat.push(image.id);
+                totalLimit+=1;
+            }
+            else if (image.getAttribute('src') === "{{url_for('static', filename='seat-curr-select.png')}}"){
+                image.setAttribute('src', "{{url_for('static', filename='seat-curr-avail.png')}}");
+                let deselectText = document.getElementById("selected-"+image.id);
+                deselectText.remove();
+                var index = selectedSeat.indexOf(image.id);
+                delete selectedSeat[index];
+                totalLimit-=1;
+            }
+            
+        }
+        
+
+        // Add event listeners to each input field
+        document.getElementById("adultTix").addEventListener("change", checkTotal);
+        document.getElementById("studentTix").addEventListener("change", checkTotal);
+        document.getElementById("seniorTix").addEventListener("change", checkTotal);
+        document.getElementById("childTix").addEventListener("change", checkTotal);
+
+        // Function to check the total value of all input fields
+        function checkTotal() {
+        let total = 0;
+        // Get the value of each input field and add it to the total
+        total += parseInt(document.getElementById("adultTix").value);
+        total += parseInt(document.getElementById("studentTix").value);
+        total += parseInt(document.getElementById("seniorTix").value);
+        total += parseInt(document.getElementById("childTix").value);
+
+        // If the total exceeds the limit, reset the last changed input field to its previous value
+        if (total > totalLimit) {
+            const lastChanged = event.target;
+            const oldValue = parseInt(lastChanged.dataset.oldValue) || 0;
+            lastChanged.value = oldValue;
+        } else {
+            // Store the current value of the changed input field
+            event.target.dataset.oldValue = event.target.value;
+        }
+        }
+
+        function sendJSON(){
+            jsonData["bookedSeats"] = selectedSeat;
+            jsonData["ticketType"] = {
+                "adultTix" : document.getElementById("adultTix").value,
+                "studentTix" : document.getElementById("studentTix").value,
+                "seniorTix" : document.getElementById("seniorTix").value,
+                "childTix" : document.getElementById("childTix").value
+            }
+            fetch('/processJsonFoodDrinks',{
+                method: 'POST',
+                headers: {
+                'Content-Type' : 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            })
+            .then(response => response.json())
+            .then(data => {
+            // do something with the data
+            window.location.href = '/foodDrinks';
+            });
+        }
+        // function sendJSON(){
+        //     jsonData["bookedSeats"] = selectedSeat;
+        //     jsonData["ticketType"] = {
+        //         "adultTix" : document.getElementById("adultTix").value,
+        //         "studentTix" : document.getElementById("studentTix").value,
+        //         "seniorTix" : document.getElementById("seniorTix").value,
+        //         "childTix" : document.getElementById("childTix").value
+        //     }
+        //     fetch('/processJsonFoodDrinks',{
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type' : 'application/json'
+        //         },
+        //         body: JSON.stringify(jsonData)
+        //     }).then(function(response) {
+        //         if (response.ok) {
+        //             // redirect to the foodDrinks page
+        //             window.location.href = '/foodDrinks';
+        //         } else {
+        //             throw new Error("Failed to send JSON data");
+        //         }
+        //         return response.text();
+        //     }).then(function(responseText) {
+        //         console.log(responseText);
+        //     }).catch(function(error) {
+        //         console.log(error);
+        //     });
+        // }
+        
+
+
+    </script>
+</body>
+</html>

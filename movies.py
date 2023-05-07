@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, flash, redirect, url_for
-from entity import getmovies, moviedetails, searchbar, getshowdate, getshowtime, getsessionid, getReview, getAvgRating
+from flask import Flask, render_template, request, flash, redirect, url_for, jsonify,json
+from entity import getmovies, moviedetails, searchbar, getshowdate, getshowtime, getsessionid, getReview, getAvgRating, displaySeat, getFoodDrinksCombo, getFoodDrinksACarte
 
 
 app = Flask(__name__)
@@ -43,7 +43,7 @@ def returntiming(movieID):
     movieD = moviedetails(movieID)
     return render_template("timing.html", date=date, timing = timings, data = movieD)
 
-@app.route("/booking/<int:movieID>", methods=['POST'])
+@app.route("/seat/<int:movieID>", methods=['POST'])
 def sessioncontroller(movieID):
     date = request.args.get('date')
     selected_time = request.form['selected_time']
@@ -51,9 +51,39 @@ def sessioncontroller(movieID):
     print(date)
     print(selected_time)
     print("Session ID : ")
-    print(sessionID)
-    return render_template("booking.html")
+    print(sessionID[0].sessionID)
+    seatDetails = displaySeat(sessionID[0].sessionID)
+    print(seatDetails)
+    return render_template("seat.html", seatDetails = seatDetails)
 
+
+
+@app.route('/processJsonFoodDrinks', methods=['POST'])
+def processJsonFoodDrinks():
+    global jsonData
+    if(request.method == 'POST'):
+        data = request.json
+        print(data)
+        jsonData = data
+        return jsonify(data)
+
+
+@app.route('/getJsonData', methods=['GET'])
+def getJsonData():
+    global jsonData  # Access the global variable
+    if jsonData is not None:
+        return jsonify(jsonData)
+    else:
+        return 'No JSON data available'
+
+
+
+
+@app.route('/foodDrinks')
+def foodDrinks():
+    combo = getFoodDrinksCombo()
+    aCarte = getFoodDrinksACarte()
+    return render_template('foodDrinks.html', combo = combo, aCarte = aCarte)
 
 
 
