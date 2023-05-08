@@ -20,22 +20,23 @@
         </div>
         <div id="selectSeat" style="float:right; width: 24%;background-color: black; border-radius: 5px;">
             <h3 style="color:white">Selected Seats</h3>
+            <button onclick="setPreferredSeat()" class="btn btn-sm btn-outline-secondary" style="color:white">Set Preferred Seats</button>
             <div id="seatSelectID"></div>
             <br/>
             <div id="typeSelect">
-                <b style="color:white">Adult ticket</b>
+                <b style="color:white">Adult ticket - $14.00</b>
                 <input type="number" min="0" max="100" value = "0" id="adultTix" name = "adultTix" style="width:30px">
                 <br/>
                 <br/>
-                <b style="color:white">Student ticket</b>
+                <b style="color:white">Student ticket - $8.00</b>
                 <input type="number" min="0" max="100" value = "0" id="studentTix" name = "studentTix" style="width:30px">
                 <br/>
                 <br/>
-                <b style="color:white">Senior ticket</b>
+                <b style="color:white">Senior ticket - $10.00</b>
                 <input type="number" min="0" max="100" value = "0" id="seniorTix" name = "seniorTix" style="width:30px">
                 <br/>
                 <br/>
-                <b style="color:white">Child ticket</b>
+                <b style="color:white">Child ticket - $5</b>
                 <input type="number" min="0" max="100" value = "0" id="childTix" name = "childTix" style="width:30px">
                 <br/>
                 <br/>
@@ -65,6 +66,7 @@
         var occupiedSeatsJSON = occupupiedSeatQ.substring(1, occupupiedSeatQ.length - 1);
         var occupiedSeats = JSON.parse(occupiedSeatsJSON)
         console.log(occupiedSeats)
+        //Dictioncary to print seat row
         var rowDict = {
             1:"A",
             2:"B",
@@ -93,6 +95,7 @@
             25:"Y",
             26:"Z",
         }
+        //Generate Seat based on seat rows and columns
         var seatRows = Number('{{ seatDetails[0].roomRow }}');
         console.log(seatRows);
         var seatColumn = Number('{{ seatDetails[0].roomCol }}');
@@ -143,12 +146,14 @@
         table.appendChild(colIdRow);
         seat.appendChild(table);
 
+        //set occupiedseats
         for(let i=0; i<occupiedSeats.length; i++)
         {
             let occupiedSeatImg = document.getElementById(occupiedSeats[i]);
             console.log(occupiedSeats[i])
             occupiedSeatImg.src = "{{url_for('static', filename='seat-curr-unavail.png')}}"; 
         }
+
 
         var totalLimit = 0; 
         function selectSeat(image){
@@ -174,7 +179,78 @@
             
         }
         
-
+        function setPreferredSeat()
+        {
+            seatPrefer = "middle";
+            //set user preferred seats
+            frontBackRows = Math.floor(seatRows / 3);
+            middleRows = seatRows - frontBackRows;
+            let flag = false;
+            if(seatPrefer == "front")
+            {
+                for(let i = 0; i < frontBackRows; i++)
+                {
+                    if(flag == true)
+                    {
+                        break;
+                    }
+                    for(let y = 0; y<seatColumn; y++)
+                    {
+                        let colNum = y+1
+                        let currSeat = document.getElementById(rowDict[i+1]+colNum);
+                        if(currSeat.src === "{{url_for('static', filename='seat-curr-avail.png')}}")
+                        {
+                            selectSeat(currSeat);
+                            flag = true;
+                            break;
+                        }
+                    }
+    
+                }
+            }
+            else if(seatPrefer == "middle")
+            {
+                for(let i = frontBackRows; i < middleRows; i++)
+                {
+                    if(flag == true)
+                    {
+                        break;
+                    }
+                    for(let y = 0; y<seatColumn; y++)
+                    {
+                        let colNum = y+1
+                        let currSeat = document.getElementById(rowDict[i+1]+colNum);
+                        if(currSeat.getAttribute('src') === "{{url_for('static', filename='seat-curr-avail.png')}}")
+                        {
+                            selectSeat(currSeat);
+                            flag = true;
+                            break
+                        }
+                    }
+                }
+            }
+            else if(seatPrefer == "back")
+            {
+                for(let i = middleRows; i < frontBackRows+middleRows; i++)
+                {
+                    if(flag == true)
+                    {
+                        break;
+                    }
+                    for(let y = 0; y<seatColumn; y++)
+                    {
+                        let colNum = y+1
+                        let currSeat = document.getElementById(rowDict[i+1]+colNum);
+                        if(currSeat.src === "{{url_for('static', filename='seat-curr-avail.png')}}")
+                        {
+                            selectSeat(currSeat);
+                            flag = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
         // Add event listeners to each input field
         document.getElementById("adultTix").addEventListener("change", checkTotal);
         document.getElementById("studentTix").addEventListener("change", checkTotal);
@@ -200,6 +276,9 @@
             event.target.dataset.oldValue = event.target.value;
         }
         }
+        
+        
+
 
         function sendJSON(){
             jsonData["bookedSeats"] = selectedSeat;
@@ -222,34 +301,6 @@
             window.location.href = '/foodDrinks';
             });
         }
-        // function sendJSON(){
-        //     jsonData["bookedSeats"] = selectedSeat;
-        //     jsonData["ticketType"] = {
-        //         "adultTix" : document.getElementById("adultTix").value,
-        //         "studentTix" : document.getElementById("studentTix").value,
-        //         "seniorTix" : document.getElementById("seniorTix").value,
-        //         "childTix" : document.getElementById("childTix").value
-        //     }
-        //     fetch('/processJsonFoodDrinks',{
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type' : 'application/json'
-        //         },
-        //         body: JSON.stringify(jsonData)
-        //     }).then(function(response) {
-        //         if (response.ok) {
-        //             // redirect to the foodDrinks page
-        //             window.location.href = '/foodDrinks';
-        //         } else {
-        //             throw new Error("Failed to send JSON data");
-        //         }
-        //         return response.text();
-        //     }).then(function(responseText) {
-        //         console.log(responseText);
-        //     }).catch(function(error) {
-        //         console.log(error);
-        //     });
-        // }
         
 
 
