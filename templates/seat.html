@@ -25,19 +25,19 @@
             <br/>
             <div id="typeSelect">
                 <b style="color:white">Adult ticket - $14.00</b>
-                <input type="number" min="0" max="100" value = "0" id="adultTix" name = "adultTix" style="width:30px">
+                <input type="number" min="0" max="100" value = "0" id="adultTix" name = "adultTix" style="width:50px">
                 <br/>
                 <br/>
                 <b style="color:white">Student ticket - $8.00</b>
-                <input type="number" min="0" max="100" value = "0" id="studentTix" name = "studentTix" style="width:30px">
+                <input type="number" min="0" max="100" value = "0" id="studentTix" name = "studentTix" style="width:50px">
                 <br/>
                 <br/>
                 <b style="color:white">Senior ticket - $10.00</b>
-                <input type="number" min="0" max="100" value = "0" id="seniorTix" name = "seniorTix" style="width:30px">
+                <input type="number" min="0" max="100" value = "0" id="seniorTix" name = "seniorTix" style="width:50px">
                 <br/>
                 <br/>
                 <b style="color:white">Child ticket - $5</b>
-                <input type="number" min="0" max="100" value = "0" id="childTix" name = "childTix" style="width:30px">
+                <input type="number" min="0" max="100" value = "0" id="childTix" name = "childTix" style="width:50px">
                 <br/>
                 <br/>
                 <button onclick="sendJSON()" class="btn btn-sm btn-outline-secondary" style="color:white">Submit</button>
@@ -54,15 +54,15 @@
     <script>
         var selectedSeat = [];
         const jsonData = {
-            "movieID" : '{{ seatDetails[0].movieID }}',
-            "title" : '{{ seatDetails[0].title }}',
-            "roomID" : '{{ seatDetails[0].roomID }}',
-            "dateTime" : '{{ seatDetails[0].dateTime }}',
+            "movieID" : '{{ seatDetails.movieID }}',
+            "title" : '{{ seatDetails.title }}',
+            "roomID" : '{{ seatDetails.roomID }}',
+            "dateTime" : '{{ seatDetails.dateTime }}',
             "ticketType" : ' ',
             "bookedSeats" : '  ',
             "foodAndDrinks" : ' '
         };
-        var occupupiedSeatQ = '{{ seatDetails[0].bookedSeats|tojson}}'
+        var occupupiedSeatQ = '{{ seatDetails.bookedSeats|tojson}}'
         var occupiedSeatsJSON = occupupiedSeatQ.substring(1, occupupiedSeatQ.length - 1);
         var occupiedSeats = JSON.parse(occupiedSeatsJSON)
         console.log(occupiedSeats)
@@ -96,9 +96,9 @@
             26:"Z",
         }
         //Generate Seat based on seat rows and columns
-        var seatRows = Number('{{ seatDetails[0].roomRow }}');
+        var seatRows = Number('{{ seatDetails.roomRow }}');
         console.log(seatRows);
-        var seatColumn = Number('{{ seatDetails[0].roomCol }}');
+        var seatColumn = Number('{{ seatDetails.roomCol }}');
         console.log(seatColumn);
         const table = document.createElement("table");
         table.style.margin = 'auto';

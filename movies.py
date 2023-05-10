@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, jsonify,json
 from entity import getmovies, moviedetails, searchbar, getshowdate, getshowtime, getsessionid, getReview, getAvgRating, displaySeat, getFoodDrinksCombo, getFoodDrinksACarte
-
+from entity import Session
 
 app = Flask(__name__)
 app.secret_key = 'my_secret_key'
@@ -48,12 +48,8 @@ def sessioncontroller(movieID):
     date = request.args.get('date')
     selected_time = request.form['selected_time']
     sessionID = getsessionid(movieID, date, selected_time)
-    print(date)
-    print(selected_time)
-    print("Session ID : ")
     print(sessionID[0].sessionID)
-    seatDetails = displaySeat(sessionID[0].sessionID)
-    print(seatDetails)
+    seatDetails = Session.display_seat(sessionID[0].sessionID)
     return render_template("seat.html", seatDetails = seatDetails)
 
 

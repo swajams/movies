@@ -5,6 +5,7 @@ DB_USER = 'root'
 DB_PASS = 'password'
 DB_NAME = 'moviedb'
 
+ 
 engine = create_engine(f"mysql+pymysql://{DB_USER}:{DB_PASS}@localhost/{DB_NAME}")
    
 def getmovies():
@@ -64,5 +65,19 @@ def getFoodDrinksACarte():
         result = conn.execute(text(f"select * from moviedb.food where name not like 'combo%'"))
         return result.all()
 
-         
-         
+
+class Session:
+    def __init__(self, sessionID,roomID, movieID, bookedSeats, dateTime, status):
+        self.sessionID = sessionID
+        self.roomID = roomID
+        self.movieID = movieID
+        self.bookedSeats = bookedSeats
+        self.dateTime = dateTime
+        self.status = status
+
+    def display_seat(sessionID):
+        with engine.connect() as conn:
+            result = conn.execute(text(f"SELECT * FROM moviedb.session inner join moviedb.room on moviedb.session.roomID = moviedb.room.roomID inner join moviedb.movies on moviedb.session.movieid = moviedb.movies.movieID where sessionID = "+ "'"+sessionID+"'"))
+            data = result.fetchone() 
+            return data
+    
