@@ -113,9 +113,13 @@
 			</div>
 		{% endif %}
 	</li>
-	{% for r in Review %} 	
+{% for r in Review %}
+	{% if r.review is not none and r.review.strip() != "" %}
 		<li class="list-group-item"><h6> {{ r.review }} </h6></li>
-	{% endfor %}   
+	{% endif %}
+
+{% endfor %}
+ 
 </ul>
 
 

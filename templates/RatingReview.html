@@ -1,0 +1,66 @@
+{% extends "movies.html" %}
+
+{% block movies %}
+
+<div class="card mb-3" style="max-width: 1000px; ">
+		<div class="row g-0">
+			<div class="col-md-4">
+				<!-- <img src="{{ data.IMG }}" class="card-img-top" alt="..."> -->
+			<img src="/{{ data.IMG }}" class="card-img-top" alt="...">
+
+			</div>
+			<div class="col-md-8">
+			<div class="card-body" style="padding-left: 30px ">	
+			<h6 class="card-title">{{ data.Name }}</h6>
+			<p class="card-text">Synopsis: {{ data.Description }}</p>
+			<p class="card-text">Year: {{ data.Year }}</p>
+			<p class="card-text">Cast: {{ data.Actors }}</p>
+			<p class="card-text">Genre: 
+			{% for genre in data.Genre.split(',') %}
+				<span class="badge rounded-pill text-bg-secondary">{{ genre.strip() }}</span>
+			{% endfor %}
+			</p>
+			<p class="card-text">Runtime: {{ data.Duration }}</p>
+		</div>
+	
+	</div>
+	</div>	
+</div>
+
+
+
+
+
+
+
+
+<div class="card w-100 mb-3">
+  <div class="card-body">
+    <form method="POST" action="{{ url_for('RatingReview', movieID=data.movieid) }}">
+      <div class="rate">
+        <input type="radio" id="star5" name="rate" value="5" />
+        <label for="star5" title="text">5 stars</label>
+        <input type="radio" id="star4" name="rate" value="4" />
+        <label for="star4" title="text">4 stars</label>
+        <input type="radio" id="star3" name="rate" value="3" />
+        <label for="star3" title="text">3 stars</label>
+        <input type="radio" id="star2" name="rate" value="2" />
+        <label for="star2" title="text">2 stars</label>
+        <input type="radio" id="star1" name="rate" value="1" />
+        <label for="star1" title="text">1 star</label>
+      </div>
+      <div class="mb-3">
+        <label for="Review" class="form-label"><h5>Review</h5></label>
+        <textarea class="form-control" id="Review" name="review" type="text" rows="3" cols="50"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+{% endblock %}

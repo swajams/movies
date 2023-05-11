@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, jsonify,json
-from entity import getmovies, moviedetails, searchbar, getshowdate, getshowtime, getsessionid, getReview, getAvgRating, displaySeat, getFoodDrinksCombo, getFoodDrinksACarte
+from entity import getmovies, moviedetails, searchbar, getshowdate, getshowtime, getsessionid, getReview, getAvgRating, displaySeat, getFoodDrinksCombo, getFoodDrinksACarte, setRatingReview
 from entity import Session
 
 app = Flask(__name__)
@@ -73,14 +73,25 @@ def getJsonData():
         return 'No JSON data available'
 
 
-
-
 @app.route('/foodDrinks')
 def foodDrinks():
     combo = getFoodDrinksCombo()
     aCarte = getFoodDrinksACarte()
     return render_template('foodDrinks.html', combo = combo, aCarte = aCarte)
+    
+@app.route("/RatingReview/<int:movieID>", methods=['GET', 'POST'])
+def RatingReview(movieID):
+    movieD = moviedetails(movieID)
+    userID = 9999
 
+    if request.method == 'POST':
+        Rating = request.form.get("rate")
+        Review = request.form.get("review")
+        if Rating is not None and Review is not None:
+            setRatingReview(movieID=movieID, Rating=int(Rating), Review=Review, userID=userID)
+
+
+    return render_template('RatingReview.html', data=movieD)
 
 
 

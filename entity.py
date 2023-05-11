@@ -2,7 +2,8 @@
 from sqlalchemy import create_engine, text
 
 DB_USER = 'root'
-DB_PASS = 'password'
+# DB_PASS = 'password'
+DB_PASS = 'E^^hnikh1984'
 DB_NAME = 'moviedb'
 
  
@@ -64,6 +65,17 @@ def getFoodDrinksACarte():
     with engine.connect() as conn:
         result = conn.execute(text(f"select * from moviedb.food where name not like 'combo%'"))
         return result.all()
+
+def setRatingReview(movieID, Rating, Review, userID):
+    print("this is entity")
+    print(movieID)
+    print(Rating)
+    print(Review)
+    print(userID)
+    with engine.connect() as conn:
+        conn.execute(text("INSERT INTO ratingreview (movieid, review, rating, userid) VALUES (:movieID, :Review, :Rating, :userID)"),
+                     {"movieID": movieID, "Rating": Rating, "Review": Review, "userID": userID})
+        conn.commit()
 
 
 class Session:
