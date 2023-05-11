@@ -83,14 +83,15 @@ def foodDrinks():
 def RatingReview(movieID):
     movieD = moviedetails(movieID)
     userID = 9999
+  
 
     if request.method == 'POST':
         Rating = request.form.get("rate")
         Review = request.form.get("review")
         if Rating is not None and Review is not None:
             setRatingReview(movieID=movieID, Rating=int(Rating), Review=Review, userID=userID)
-
-
+            flash("Submitted Successfully!")
+ 
     return render_template('RatingReview.html', data=movieD)
 
 
