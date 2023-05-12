@@ -65,13 +65,13 @@
         data["foodAndDrinks"] = {};
         
         '{% for item in combo %}'
-            if(data["foodAndDrinks"]["{{item.itemID}}"] != '0')
+            if(document.getElementById("{{ item.itemID }}").value != '0')
             {
               data["foodAndDrinks"]['{{item.itemID}}'] = document.getElementById("{{item.itemID}}").value
             }
         '{% endfor %}'
         '{% for item in aCarte %}'
-        if(data["foodAndDrinks"]["{{item.itemID}}"] != '0')
+          if(document.getElementById("{{ item.itemID }}").value != '0')
             {
               data["foodAndDrinks"]['{{item.itemID}}'] = document.getElementById("{{item.itemID}}").value
             }
