@@ -3,7 +3,7 @@ from sqlalchemy import create_engine, text
 
 DB_USER = 'root'
 DB_PASS = 'password'
-# DB_PASS = 'E^^hnikh1984'
+#DB_PASS = 'E^^hnikh1984'
 DB_NAME = 'moviedb'
 
  
@@ -27,24 +27,23 @@ class MovieEntity:
             return result.fetchall()
 
 
-      
+class RR:     
 
+    def getReview(movieID):
+        with engine.connect() as conn:
+            R = conn.execute(text(f"SELECT review FROM moviedb.ratingreview WHERE MovieID = '{ movieID }'"))
+            return R.fetchall()     
 
-def getReview(movieID):
-    with engine.connect() as conn:
-        R = conn.execute(text(f"SELECT review FROM moviedb.ratingreview WHERE MovieID = '{ movieID }'"))
-        return R.fetchall()     
-
-def getAvgRating(movieID):
-    with engine.connect() as conn:
-        Rating =  conn.execute(text(f"SELECT AVG(rating) FROM moviedb.ratingreview WHERE MovieID = '{ movieID }' "))
-        return Rating.fetchone()[0]
-        
-def setRatingReview(movieID, Rating, Review, userID):
-    with engine.connect() as conn:
-        conn.execute(text("INSERT INTO ratingreview (movieid, review, rating, userid) VALUES (:movieID, :Review, :Rating, :userID)"),
-                     {"movieID": movieID, "Rating": Rating, "Review": Review, "userID": userID})
-    conn.commit()
+    def getAvgRating(movieID):
+        with engine.connect() as conn:
+            Rating =  conn.execute(text(f"SELECT AVG(rating) FROM moviedb.ratingreview WHERE MovieID = '{ movieID }' "))
+            return Rating.fetchone()[0]
+            
+    def setRatingReview(movieID, Rating, Review, userID):
+        with engine.connect() as conn:
+            conn.execute(text("INSERT INTO ratingreview (movieid, review, rating, userid) VALUES (:movieID, :Review, :Rating, :userID)"),
+                         {"movieID": movieID, "Rating": Rating, "Review": Review, "userID": userID})
+        conn.commit()
 
              
          

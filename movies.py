@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, jsonify,json
-from entity import displaySeat, getFoodDrinksCombo, getFoodDrinksACarte, getReview, getAvgRating, setRatingReview
-from entity import Session, MovieEntity
+from entity import displaySeat, getFoodDrinksCombo, getFoodDrinksACarte
+from entity import Session, MovieEntity, RR
 
 app = Flask(__name__)
 app.secret_key = 'my_secret_key'
@@ -14,8 +14,8 @@ def main():
 def movd(movieID):
     dates = Session.getshowdate(movieID)
     movieD = MovieEntity.moviedetails(movieID)
-    Review = getReview(movieID)
-    AvgRating = getAvgRating(movieID)
+    Review = RR.getReview(movieID)
+    AvgRating = RR.getAvgRating(movieID)
     if AvgRating is not None:
         Rate = round(AvgRating, 1)
     else:
@@ -88,7 +88,7 @@ def RatingReview(movieID):
         Rating = request.form.get("rate")
         Review = request.form.get("review")
         if Rating is not None and Review is not None:
-            setRatingReview(movieID=movieID, Rating=int(Rating), Review=Review, userID=userID)
+            RR.setRatingReview(movieID=movieID, Rating=int(Rating), Review=Review, userID=userID)
             flash("Submitted Successfully!")
  
     return render_template('RatingReview.html', data=movieD)
