@@ -47,11 +47,6 @@ class RR:
 
              
          
-def displaySeat(sessionID):
-    with engine.connect() as conn:
-        result = conn.execute(text(f"SELECT * FROM moviedb.session inner join moviedb.room on moviedb.session.roomID = moviedb.room.roomID inner join moviedb.movies on moviedb.session.movieid = moviedb.movies.movieID where sessionID = "+ "'"+sessionID+"'"))
-        return result.all()
-
 def getFoodDrinksCombo():
     with engine.connect() as conn:
         result = conn.execute(text(f"select * from moviedb.food where name like 'combo%'"))

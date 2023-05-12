@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, jsonify,json
-from entity import displaySeat, getFoodDrinksCombo, getFoodDrinksACarte
+from entity import getFoodDrinksCombo, getFoodDrinksACarte
 from entity import Session, MovieEntity, RR
 
 app = Flask(__name__)

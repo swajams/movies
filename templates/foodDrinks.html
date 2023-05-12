@@ -65,12 +65,16 @@
         data["foodAndDrinks"] = {};
         
         '{% for item in combo %}'
-            
-            data["foodAndDrinks"]['{{item.itemID}}'] = document.getElementById("{{item.itemID}}").value
+            if(data["foodAndDrinks"]["{{item.itemID}}"] != '0')
+            {
+              data["foodAndDrinks"]['{{item.itemID}}'] = document.getElementById("{{item.itemID}}").value
+            }
         '{% endfor %}'
         '{% for item in aCarte %}'
-            
-            data["foodAndDrinks"]['{{item.itemID}}'] = document.getElementById("{{item.itemID}}").value
+        if(data["foodAndDrinks"]["{{item.itemID}}"] != '0')
+            {
+              data["foodAndDrinks"]['{{item.itemID}}'] = document.getElementById("{{item.itemID}}").value
+            }
         '{% endfor %}'
         console.log(data["foodAndDrinks"]);
 
