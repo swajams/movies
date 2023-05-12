@@ -2,8 +2,8 @@
 from sqlalchemy import create_engine, text
 
 DB_USER = 'root'
-# DB_PASS = 'password'
-DB_PASS = 'E^^hnikh1984'
+DB_PASS = 'password'
+# DB_PASS = 'E^^hnikh1984'
 DB_NAME = 'moviedb'
 
  
@@ -25,14 +25,15 @@ class MovieEntity:
         with engine.connect() as conn:
             result = conn.execute(text(f"SELECT * FROM moviedb.movies WHERE Name LIKE '%{search_query}%'"))
             return result.fetchall()
-        
+
+
+      
+
+
 def getReview(movieID):
     with engine.connect() as conn:
         R = conn.execute(text(f"SELECT review FROM moviedb.ratingreview WHERE MovieID = '{ movieID }'"))
-        return R.fetchall()
-        
-
-
+        return R.fetchall()     
 
 def getAvgRating(movieID):
     with engine.connect() as conn:
@@ -43,7 +44,7 @@ def setRatingReview(movieID, Rating, Review, userID):
     with engine.connect() as conn:
         conn.execute(text("INSERT INTO ratingreview (movieid, review, rating, userid) VALUES (:movieID, :Review, :Rating, :userID)"),
                      {"movieID": movieID, "Rating": Rating, "Review": Review, "userID": userID})
-        conn.commit()
+    conn.commit()
 
              
          

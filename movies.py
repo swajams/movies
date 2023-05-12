@@ -83,7 +83,6 @@ def foodDrinks():
 def RatingReview(movieID):
     movieD = MovieEntity.moviedetails(movieID)
     userID = 9999
-  
 
     if request.method == 'POST':
         Rating = request.form.get("rate")
@@ -93,7 +92,6 @@ def RatingReview(movieID):
             flash("Submitted Successfully!")
  
     return render_template('RatingReview.html', data=movieD)
-
 
 
 if __name__ == "__main__":
