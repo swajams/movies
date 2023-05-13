@@ -89,3 +89,27 @@ class Session:
         with engine.connect() as conn:
             session = conn.execute(text(f"SELECT sessionID FROM moviedb.session WHERE MovieID = '{ movieID }' AND dateTime LIKE '%{ date }%' AND dateTime LIKE '%{ selected_timing }%' "))
             return session.fetchall()
+        
+class tempBooking:
+    def createTempBooking(roomID, movieID, holdSeats, createdTime ,dateTime):
+        with engine.connect() as conn:
+            conn.execute(text("INSERT INTO moviedb.tempbooking (roomID, movieID, holdSeats, createdTime ,dateTime) VALUES (:roomID, :movieID, :holdSeats, :createdTime ,:dateTime)"),
+                         {"roomID": roomID, "movieID": movieID, "holdSeats": holdSeats, "createdTime" : createdTime ,"dateTime": dateTime})
+            conn.commit()
+
+    def getTempBooking(roomID, dateTime):
+        print(roomID)
+        print(dateTime)
+        with engine.connect() as conn:
+            result = conn.execute(text(f"SELECT holdSeats FROM moviedb.tempbooking WHERE roomID = '{ roomID }' AND dateTime = '{ dateTime }' "))
+            return result.fetchall()
+
+    def deleteExpiredBooking():
+        with engine.connect() as conn:
+            conn.execute(text(f"delete from moviedb.tempbooking WHERE createdTime <= DATE_SUB(NOW(), INTERVAL 10 MINUTE);"))
+            conn.commit()
+    
+    def getExpiredBooking():
+        with engine.connect() as conn:
+            query = conn.execute(text(f"select * from moviedb.tempbooking WHERE createdTime <= DATE_SUB(NOW(), INTERVAL 10 MINUTE);"))
+            return query.fetchone()

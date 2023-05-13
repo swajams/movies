@@ -1,9 +1,12 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, jsonify,json
 from entity import getFoodDrinksCombo, getFoodDrinksACarte
-from entity import Session, MovieEntity, RR
-
+from entity import Session, MovieEntity, RR, tempBooking
+from apscheduler.schedulers.background import BackgroundScheduler
+from datetime import datetime, timedelta
+import datetime
 app = Flask(__name__)
 app.secret_key = 'my_secret_key'
+
 
 @app.route("/")
 def main():
@@ -50,18 +53,25 @@ def sessioncontroller(movieID):
     sessionID = Session.getsessionid(movieID, date, selected_time)
     print(sessionID[0].sessionID)
     seatDetails = Session.display_seat(sessionID[0].sessionID)
-    return render_template("seat.html", seatDetails = seatDetails)
+    holdSeats = tempBooking.getTempBooking(seatDetails.roomID, seatDetails.dateTime)
+    if holdSeats == None:
+        holdSeats = "{}"
+    
+    return render_template("seat.html", seatDetails = seatDetails, holdSeats = holdSeats)
 
 
 
 @app.route('/processJsonFoodDrinks', methods=['POST'])
 def processJsonFoodDrinks():
-    global jsonData
-    if(request.method == 'POST'):
-        data = request.json
-        print(data)
-        jsonData = data
-        return jsonify(data)
+        if(request.method == 'POST'):
+            data = request.json
+            print(data)
+            jsonData = data
+            oldList  = jsonData["bookedSeats"]
+            newList = [item.replace("'", "\"") for item in oldList]
+            print(newList)
+            tempBooking.createTempBooking(jsonData["roomID"], jsonData["movieID"], json.dumps(newList), datetime.datetime.now(), jsonData["dateTime"])
+            return jsonify(data)
 
 
 @app.route('/getJsonData', methods=['GET'])
@@ -94,5 +104,12 @@ def RatingReview(movieID):
     return render_template('RatingReview.html', data=movieD)
 
 
+def deleteTempSession():
+    if (tempBooking.getExpiredBooking() != None):
+        tempBooking.deleteExpiredBooking()
+    
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=deleteTempSession, trigger='interval', minutes=2) # Runs every hour
+scheduler.start()
 if __name__ == "__main__":
     app.run(debug=True)

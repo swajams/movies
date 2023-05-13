@@ -62,9 +62,19 @@
             "bookedSeats" : '  ',
             "foodAndDrinks" : ' '
         };
-        var occupupiedSeatQ = '{{ seatDetails.bookedSeats|tojson}}'
-        var occupiedSeatsJSON = occupupiedSeatQ.substring(1, occupupiedSeatQ.length - 1);
-        var occupiedSeats = JSON.parse(occupiedSeatsJSON)
+        if('{{ seatDetails.bookedSeats }}' != null){
+            var occupupiedSeatQ = '{{ seatDetails.bookedSeats|tojson }}'
+            var occupiedSeatsJSON = occupupiedSeatQ.substring(1, occupupiedSeatQ.length - 1);
+            var occupiedSeats = JSON.parse(occupiedSeatsJSON)
+        }
+        '{% for item in holdSeats %}'
+            if('{{ item.holdSeats }}' != null){
+                var holdSeatsQ = '{{ item.holdSeats|tojson }}'
+                var holdSeatsJSON = holdSeatsQ.substring(1, holdSeatsQ.length - 1);
+                var holdSeats = JSON.parse(holdSeatsJSON)
+                console.log(holdSeats)
+            }
+        '{% endfor %}'
         console.log(occupiedSeats)
         //Dictioncary to print seat row
         var rowDict = {
@@ -147,14 +157,24 @@
         seat.appendChild(table);
 
         //set occupiedseats
-        for(let i=0; i<occupiedSeats.length; i++)
-        {
-            let occupiedSeatImg = document.getElementById(occupiedSeats[i]);
-            console.log(occupiedSeats[i])
-            occupiedSeatImg.src = "{{url_for('static', filename='seat-curr-unavail.png')}}"; 
+        if('{{ seatDetails.bookedSeats }}' != null){
+            for(let i=0; i<occupiedSeats.length; i++)
+            {
+                let occupiedSeatImg = document.getElementById(occupiedSeats[i]);
+                console.log(occupiedSeats[i])
+                occupiedSeatImg.src = "{{url_for('static', filename='seat-curr-unavail.png')}}"; 
+            }
         }
-
-
+        //set holdSeats
+        '{% for item in holdSeats %}'
+            if('{{ item }}' != null){
+                for(let i=0; i<holdSeats.length; i++)
+                {
+                    let heldSeats = document.getElementById(holdSeats[i]);
+                    heldSeats.src = "{{url_for('static', filename='seat-curr-hold.png')}}"; 
+                }
+            }
+        '{% endfor %}'
         var totalLimit = 0; 
         function selectSeat(image){
             const seatSelectDiv = document.getElementById("seatSelectID");
