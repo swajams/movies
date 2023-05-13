@@ -109,7 +109,3 @@ class tempBooking:
             conn.execute(text(f"delete from moviedb.tempbooking WHERE createdTime <= DATE_SUB(NOW(), INTERVAL 10 MINUTE);"))
             conn.commit()
     
-    def getExpiredBooking():
-        with engine.connect() as conn:
-            query = conn.execute(text(f"select * from moviedb.tempbooking WHERE createdTime <= DATE_SUB(NOW(), INTERVAL 10 MINUTE);"))
-            return query.fetchone()
