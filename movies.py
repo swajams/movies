@@ -105,8 +105,7 @@ def RatingReview(movieID):
 
 
 def deleteTempSession():
-    if (tempBooking.getExpiredBooking() != None):
-        tempBooking.deleteExpiredBooking()
+    tempBooking.deleteExpiredBooking()
     
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=deleteTempSession, trigger='interval', minutes=2) # Runs every hour
