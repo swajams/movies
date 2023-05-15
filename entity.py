@@ -77,7 +77,8 @@ def updateSessions(bookedSeats, sessionID):
 
 def insertTicket(userID, roomID, movieID, seatSelected, dateTime, ticketType, status):
     with engine.connect() as conn:
-        query = text(f"INSERT INTO moviedb.ticket (userID, roomID, movieID, seatSelected, dateTime, ticketType, status) VALUES ('{userID}', '{roomID}', '{movieID}', '{seatSelected}', '{dateTime}', '{ticketType}', '{status}' );")
+        print(ticketType)
+        query = text(f"INSERT INTO moviedb.ticket (userID, roomID, movieid, seatSelected, dateTime, ticketType, status) VALUES ('{userID}', '{roomID}', '{movieID}', '{seatSelected}', '{dateTime}', '{ticketType}', '{status}' );")
         conn.execute(query)
         conn.commit()
 
@@ -99,9 +100,9 @@ def getFoodDetails(foodid):
 #        conn.execute(query)
 #        conn.commit()
 
-def bookingHistory():
+def bookingHistory(userID):
     with engine.connect() as conn:
-        result = conn.execute(text(f"select * from moviedb.movies INNER JOIN moviedb.ticket ON moviedb.movies.movieid = moviedb.ticket.movieid "))
+        result = conn.execute(text(f"select * from moviedb.movies INNER JOIN moviedb.ticket ON moviedb.movies.movieid = moviedb.ticket.movieid where userID = '{userID}' "))
         return result.all()
 
 class Session:

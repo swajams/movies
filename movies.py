@@ -135,21 +135,29 @@ def reviewPage():
 def bookingSuccess():
     global jsonData
     bookedSeats = json.loads(getBookedSeats(jsonData["sessionID"]).bookedSeats)
-    print("bookedSeats =", bookedSeats)
+    #print("bookedSeats =", bookedSeats)
     #for i in jsonData["bookedSeats"]:
     #for i in range(len(jsonData["bookedSeats"])):
     #    bookedSeats.append(i)
     #    ticketType = jsonData["ticketType"][i]
     #    insertTicket("U1", jsonData["roomID"], int(jsonData["movieID"]), i, jsonData["dateTime"], ticketType , "unwatched")
     ticket_types = []
-    ticket_types.append('adultTix')
-    ticket_types.append('studentTix')
-    ticket_types.append('seniorTix')
-    ticket_types.append('childTix')
+    for i in range(0, len(jsonData["ticketType"]["adultTix"])):
+        ticket_types.append("adultTix")
+    for i in range(0, len(jsonData["ticketType"]["studentTix"])):
+        ticket_types.append("studentTix")
+    for i in range(0, len(jsonData["ticketType"]["seniorTix"])):
+        ticket_types.append("seniorTix")
+    for i in range(0, len(jsonData["ticketType"]["childTix"])):
+        ticket_types.append("childTix")
+    
     for i in range(0, len(jsonData["bookedSeats"])):
         bookedSeats.append(jsonData["bookedSeats"][i])
         print(bookedSeats[i])
+        print("userID", "roomID", "movieID", "seatSelected", "dateTime", "ticketType", "status")
         #ticket_types = jsonData["ticketType"][i]
+        print(ticket_types[i])
+        print("----------------------")
         insertTicket("U1", jsonData["roomID"], int(jsonData["movieID"]), jsonData["bookedSeats"][i], jsonData["dateTime"], ticket_types[i] , "unwatched")    
 
 
@@ -161,7 +169,8 @@ def bookingSuccess():
 
 @app.route('/pastBooking')
 def viewPastBooking():
-    pastb = bookingHistory()
+    UID = 'U1'
+    pastb = bookingHistory(UID)
     return render_template('pastBooking.html', pastb=pastb)
 
 
