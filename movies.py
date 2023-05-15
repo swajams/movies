@@ -135,7 +135,7 @@ def reviewPage():
 def bookingSuccess():
     global jsonData
     bookedSeats = json.loads(getBookedSeats(jsonData["sessionID"]).bookedSeats)
-    print(bookedSeats)
+    print("bookedSeats =", bookedSeats)
     #for i in jsonData["bookedSeats"]:
     #for i in range(len(jsonData["bookedSeats"])):
     #    bookedSeats.append(i)
@@ -147,10 +147,10 @@ def bookingSuccess():
     ticket_types.append('seniorTix')
     ticket_types.append('childTix')
     for i in range(0, len(jsonData["bookedSeats"])):
-        bookedSeats.append(i)
-        bookedSeats = jsonData["bookedSeats"][i]
+        bookedSeats.append(jsonData["bookedSeats"][i])
+        print(bookedSeats[i])
         #ticket_types = jsonData["ticketType"][i]
-        insertTicket("U1", jsonData["roomID"], int(jsonData["movieID"]), bookedSeats, jsonData["dateTime"], ticket_types[i] , "unwatched")    
+        insertTicket("U1", jsonData["roomID"], int(jsonData["movieID"]), jsonData["bookedSeats"][i], jsonData["dateTime"], ticket_types[i] , "unwatched")    
 
 
     strbookedSeats = json.dumps(bookedSeats)
