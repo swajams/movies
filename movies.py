@@ -1,17 +1,11 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, jsonify,json
-<<<<<<< Updated upstream
-from entity import getFoodDrinksCombo, getFoodDrinksACarte
+from entity import getFoodDrinksCombo, getFoodDrinksACarte, displayReview, Success, getFoodDetails, getBookedSeats ,updateSessions, bookingHistory, insertTicket, getSerialNo
 from entity import Session, MovieEntity, RR, tempBooking
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime, timedelta
 import datetime
-=======
-from entity import getFoodDrinksCombo, getFoodDrinksACarte, displayReview, Success, getFoodDetails, getBookedSeats ,updateSessions, bookingHistory, insertTicket, getSerialNo
-from entity import Session, MovieEntity, RR
 
 
-
->>>>>>> Stashed changes
 app = Flask(__name__)
 app.secret_key = 'my_secret_key'
 
@@ -73,6 +67,7 @@ def sessioncontroller(movieID):
 @app.route('/processJsonFoodDrinks', methods=['POST'])
 def processJsonFoodDrinks():
         if(request.method == 'POST'):
+            global jsonData
             data = request.json
             print(data)
             jsonData = data
@@ -113,14 +108,14 @@ def RatingReview(movieID):
     return render_template('RatingReview.html', data=movieD)
 
 
-<<<<<<< Updated upstream
 def deleteTempSession():
     tempBooking.deleteExpiredBooking()
     
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=deleteTempSession, trigger='interval', minutes=2) # Runs every hour
 scheduler.start()
-=======
+
+
 @app.route('/reviewPage', methods=['GET','POST'])
 def reviewPage():
     if request.method == 'POST':
@@ -182,7 +177,6 @@ def retrieveFOOD():
         return jsonify({"FoodName": name, "Price" : price}) #return the json back to html
     return render_template('reviewpage.html')
 
->>>>>>> Stashed changes
 if __name__ == "__main__":
     app.run(debug=True)
 
