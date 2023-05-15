@@ -13,7 +13,7 @@
                   <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
                       <input type="number" id="{{ item.itemID }}" value="0" min="0">
-                      <button type="button" class="btn btn-sm btn-outline-secondary">${{ item.price }}</button>
+                      <button value="{{item.price}}" id="price{{item.itemID}}" type="button" class="btn btn-sm btn-outline-secondary">${{ item.price }}</button>
                     </div>
                   </div>
                 </div>
@@ -30,7 +30,7 @@
                   <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
                       <input type="number" id="{{ item.itemID }}" value="0" min="0">
-                      <button type="button" class="btn btn-sm btn-outline-secondary">${{ item.price }}</button>
+                      <button value="{{item.price}}" id="price{{item.itemID}}" type="button" class="btn btn-sm btn-outline-secondary">${{ item.price }}</button>
                     </div>
                   </div>
                 </div>
@@ -63,17 +63,22 @@
     function sendJson(data)
     {
         data["foodAndDrinks"] = {};
+        data["foodAndDrinksPrice"] = {};
+
         
         '{% for item in combo %}'
             if(document.getElementById("{{ item.itemID }}").value != '0')
             {
               data["foodAndDrinks"]['{{item.itemID}}'] = document.getElementById("{{item.itemID}}").value
+              data["foodAndDrinksPrice"]['{{item.itemID}}'] = document.getElementById("price" + "{{item.itemID}}").value
+              console.log(data["foodAndDrinksPrice"]['{{item.itemID}}'] = document.getElementById("price" + "{{item.itemID}}").value)
             }
         '{% endfor %}'
         '{% for item in aCarte %}'
           if(document.getElementById("{{ item.itemID }}").value != '0')
             {
               data["foodAndDrinks"]['{{item.itemID}}'] = document.getElementById("{{item.itemID}}").value
+              data["foodAndDrinksPrice"]['{{item.itemID}}'] = document.getElementById("price" + "{{item.itemID}}").value
             }
         '{% endfor %}'
         console.log(data["foodAndDrinks"]);
@@ -88,7 +93,7 @@
             .then(response => response.json())
             .then(data => {
             // do something with the data
-            window.location.href = '/foodDrinks';
+            window.location.href = '/reviewPage';
             });
     }
 </script>

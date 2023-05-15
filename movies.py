@@ -1,9 +1,17 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, jsonify,json
+<<<<<<< Updated upstream
 from entity import getFoodDrinksCombo, getFoodDrinksACarte
 from entity import Session, MovieEntity, RR, tempBooking
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime, timedelta
 import datetime
+=======
+from entity import getFoodDrinksCombo, getFoodDrinksACarte, displayReview, Success, getFoodDetails, getBookedSeats ,updateSessions, bookingHistory, insertTicket, getSerialNo
+from entity import Session, MovieEntity, RR
+
+
+
+>>>>>>> Stashed changes
 app = Flask(__name__)
 app.secret_key = 'my_secret_key'
 
@@ -45,6 +53,7 @@ def returntiming(movieID):
     timings = Session.getshowtime(movieID, date)
     movieD = MovieEntity.moviedetails(movieID)
     return render_template("timing.html", date=date, timing = timings, data = movieD)
+
 
 @app.route("/seat/<int:movieID>", methods=['POST'])
 def sessioncontroller(movieID):
@@ -104,11 +113,112 @@ def RatingReview(movieID):
     return render_template('RatingReview.html', data=movieD)
 
 
+<<<<<<< Updated upstream
 def deleteTempSession():
     tempBooking.deleteExpiredBooking()
     
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=deleteTempSession, trigger='interval', minutes=2) # Runs every hour
 scheduler.start()
+=======
+@app.route('/reviewPage', methods=['GET','POST'])
+def reviewPage():
+    if request.method == 'POST':
+        serial_No = request.form.get('serialNo') 
+        print(f"serial_No = {serial_No}")
+        get_serial = getSerialNo(serial_No)
+        if get_serial != 0: 
+            print('Serial No found')
+            return render_template('reviewpage.html', get_serial = get_serial)
+        else:
+            print('Serial No not found in db')
+    #revPage = displayReview()
+    return render_template('reviewpage.html')
+
+
+@app.route('/bookingSuccess')
+def bookingSuccess():
+    global jsonData
+    bookedSeats = json.loads(getBookedSeats(jsonData["sessionID"]).bookedSeats)
+    print(bookedSeats)
+    #for i in jsonData["bookedSeats"]:
+    #for i in range(len(jsonData["bookedSeats"])):
+    #    bookedSeats.append(i)
+    #    ticketType = jsonData["ticketType"][i]
+    #    insertTicket("U1", jsonData["roomID"], int(jsonData["movieID"]), i, jsonData["dateTime"], ticketType , "unwatched")
+    ticket_types = []
+    ticket_types.append('adultTix')
+    ticket_types.append('studentTix')
+    ticket_types.append('seniorTix')
+    ticket_types.append('childTix')
+    for i in range(0, len(jsonData["bookedSeats"])):
+        bookedSeats.append(i)
+        bookedSeats = jsonData["bookedSeats"][i]
+        #ticket_types = jsonData["ticketType"][i]
+        insertTicket("U1", jsonData["roomID"], int(jsonData["movieID"]), bookedSeats, jsonData["dateTime"], ticket_types[i] , "unwatched")    
+
+
+    strbookedSeats = json.dumps(bookedSeats)
+    updateSessions(strbookedSeats,jsonData["sessionID"])
+    booking = Success()
+    return render_template('bookedDetails.html', booking=booking)
+
+
+@app.route('/pastBooking')
+def viewPastBooking():
+    pastb = bookingHistory()
+    return render_template('pastBooking.html', pastb=pastb)
+
+
+@app.route('/retrieve_food', methods =["POST"])
+def retrieveFOOD():
+    if request.method == "POST":
+        foodid = request.form.get("foodid") #get data just now from the POST method, equivalent from line 71 in reviewpage.html
+        details = getFoodDetails(foodid) #call the fn from entity.py, getFoodDetails is to execute the query
+        name = ""
+        for i in details: #iterate inside details then retrieve the name of the food from
+            name = i.name #assign name of food to the name variable from db
+            price = i.price
+        return jsonify({"FoodName": name, "Price" : price}) #return the json back to html
+    return render_template('reviewpage.html')
+
+>>>>>>> Stashed changes
 if __name__ == "__main__":
     app.run(debug=True)
+
+        #ticketType = jsonData["ticketType"].get(seat)
+    #    print(ticketType)
+        #ticketTypes = {
+    #    "adultTix" : "adultTix",
+    #    "studentTix" : "studentTix",
+    #    "seniorTix" : "seniorTix",
+    #    "childTix" : "childTix"
+    #}
+        #ticketType = jsonData["ticketType"][seat]
+        #ticketType = jsonData["ticketType"]
+        #if ticketType in ticketTypes:
+            #ticketType = ticketTypes[ticketType]
+        #ticketType = jsonData["ticketType"].get(i)
+        #if ticketType in ticketTypes:
+        #    ticketType = ticketTypes[ticketType]
+            #insertTicket("U1", jsonData["roomID"], int(jsonData["movieID"]), i, jsonData["dateTime"], ticketType , "unwatched")
+        #ticketType = jsonData["ticketType"].get(i)
+        #if ticketType in ticketTypes:
+        #    ticketType = ticketTypes[ticketType]
+        #ticketType = request.args.get(f"ticketType_{i}")
+        #ticketType = jsonData["ticketType"]
+        #ticketType = ticketType.get(i)
+        #ticketType = jsonData["ticketType"][i]
+                #ticketType = jsonData["ticketType"][i]
+        #ticketTypes.append(ticketType)
+        #print(ticketTypes)
+    #    ticketType = getTicketType(seat)
+    #    ticketTypes[ticketType].append(seat)
+        #ticketTypes = jsonData["ticketType"]
+
+    #bookedSeats = []
+    #for seat in jsonData["bookedSeats"]:
+    #    bookedSeats.append(seat)
+    #for j in range(len(jsonData["bookedSeats"])):
+    #    ticketType = jsonData["ticketType"][j]
+    #insertTicket("U1", jsonData["roomID"], int(jsonData["movieID"]), j, jsonData["dateTime"], ticketType , "unwatched")

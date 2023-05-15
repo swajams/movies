@@ -44,9 +44,7 @@ class RR:
             conn.execute(text("INSERT INTO ratingreview (movieid, review, rating, userid) VALUES (:movieID, :Review, :Rating, :userID)"),
                          {"movieID": movieID, "Rating": Rating, "Review": Review, "userID": userID})
         conn.commit()
-
-             
-         
+  
 def getFoodDrinksCombo():
     with engine.connect() as conn:
         result = conn.execute(text(f"select * from moviedb.food where name like 'combo%'"))
@@ -57,7 +55,54 @@ def getFoodDrinksACarte():
         result = conn.execute(text(f"select * from moviedb.food where name not like 'combo%'"))
         return result.all()
 
+def displayReview():
+    with engine.connect() as conn:
+        result = conn.execute(text(f"select * from moviedb.rewards INNER JOIN moviedb.generatedrewards ON moviedb.rewards.rewardID = moviedb.generatedrewards.rewardID "))
+        return result.all()
 
+def Success():
+    with engine.connect() as conn:
+        result = conn.execute(text(f"select * from moviedb.movies INNER JOIN moviedb.ticket ON moviedb.movies.movieid = moviedb.ticket.movieid"))
+        return result.all()
+
+def getBookedSeats(sessionID):
+    with engine.connect() as conn:
+        result = conn.execute(text(f"select bookedSeats from moviedb.session where sessionID = " + "'" + sessionID + "'"))
+        return result.fetchone()
+
+def updateSessions(bookedSeats, sessionID):
+    with engine.connect() as conn:
+        conn.execute(text(f"UPDATE moviedb.session set bookedSeats = " + "'" + bookedSeats + "'" + "where sessionID =" + "'" + sessionID + "'"))
+        conn.commit()
+
+def insertTicket(userID, roomID, movieID, seatSelected, dateTime, ticketType, status):
+    with engine.connect() as conn:
+        query = text(f"INSERT INTO moviedb.ticket (userID, roomID, movieID, seatSelected, dateTime, ticketType, status) VALUES ('{userID}', '{roomID}', '{movieID}', '{seatSelected}', '{dateTime}', '{ticketType}', '{status}' );")
+        conn.execute(query)
+        conn.commit()
+
+def getSerialNo(serialNo):
+    with engine.connect() as conn:
+        result = conn.execute(text(f"select * from moviedb.generatedrewards inner join moviedb.rewards on moviedb.generatedrewards.rewardID = moviedb.rewards.rewardID where serialNo = '{serialNo}';"))
+        print(result.all())
+        print(len(result.all()))
+        return result.all()
+
+def getFoodDetails(foodid):
+    with engine.connect() as conn:
+        result = conn.execute(text(f"select * from moviedb.food where itemID = '{foodid}' "))
+        return result.all()
+
+#def insert(rewardID, serialNo):
+#    with engine.connect() as conn:
+#        query = text(f"INSERT INTO moviedb.generatedreward (rewardID, serialNo) VALUES ('{rewardID}', '{serialNo}');")
+#        conn.execute(query)
+#        conn.commit()
+
+def bookingHistory():
+    with engine.connect() as conn:
+        result = conn.execute(text(f"select * from moviedb.movies INNER JOIN moviedb.ticket ON moviedb.movies.movieid = moviedb.ticket.movieid "))
+        return result.all()
 
 class Session:
     def __init__(self, sessionID,roomID, movieID, bookedSeats, dateTime, status):
@@ -72,19 +117,19 @@ class Session:
         with engine.connect() as conn:
             result = conn.execute(text(f"SELECT * FROM moviedb.session inner join moviedb.room on moviedb.session.roomID = moviedb.room.roomID inner join moviedb.movies on moviedb.session.movieid = moviedb.movies.movieID where sessionID = "+ "'"+sessionID+"'"))
             data = result.fetchone() 
-            return data
-            
+            return data    
+
     def getshowdate(movieID):
         with engine.connect() as conn:
              dates = conn.execute(text(f"SELECT dateTime FROM moviedb.session WHERE MovieID = '{ movieID }'"))
-             return dates.fetchall()
-         
+             return dates.fetchall() 
+
     def getshowtime(movieID, date):
         with engine.connect() as conn:
             timing = conn.execute(text(f"SELECT dateTime FROM moviedb.session WHERE MovieID = '{ movieID }' AND dateTime LIKE '%{ date }%'"))
             timings = [row[0].strftime('%H:%M') for row in timing.fetchall()]
-            return timings
-            
+            return timings     
+
     def getsessionid(movieID, date, selected_timing):
         with engine.connect() as conn:
             session = conn.execute(text(f"SELECT sessionID FROM moviedb.session WHERE MovieID = '{ movieID }' AND dateTime LIKE '%{ date }%' AND dateTime LIKE '%{ selected_timing }%' "))

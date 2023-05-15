@@ -1,0 +1,150 @@
+{% extends "movies.html" %} 
+{% block movies %}
+    <h1>Review Page Before Payment.</h1><br/>
+<br/>
+<br/>
+{% for each_revPage in revPage %}
+{% endfor %}
+
+  <p id="movieID" style="color: white; display: none;"></p>
+
+  <div style="display: flex;">
+  <h4 style="text-align: left; color: white; margin-right: 2%;">Movie Title : </h4>
+  <p id="title" style="color: white; font-size: 130%;"></p>
+  </div>
+
+  <div style="display: flex;">
+  <h4 style="text-align: left; color: white; margin-right: 2%;">Cinema Room : </h4>
+  <p id="roomID" style="color: white; font-size: 130%;"></p>
+  </div>
+
+  <div style="display: flex;">
+  <h4 style="text-align: left; color: white; margin-right: 2%;">Date & Time : </h4>
+  <p id="dateTime" style="color: white; font-size: 130%;"></p>
+  </div>
+
+  <div>
+  <h4 style="text-align: left; color: white;" >Ticket type : </h4>
+  <div style="display: flex; margin-left: 2%;"><p style="color: white; margin-right: 2%; font-size: 130%;">Adult Ticket : </p><p id="adultTix" style="color: white;  font-size: 130%;"></p></div>
+  <div style="display: flex; margin-left: 2%;"><p style="color: white; margin-right: 2%; font-size: 130%;">Student Ticket : </p><p id="studentTix" style="color: white;  font-size: 130%;"></p></div>
+  <div style="display: flex; margin-left: 2%;"><p style="color: white; margin-right: 2%; font-size: 130%;">Senior Ticket : </p><p id="seniorTix" style="color: white;  font-size: 130%;"></p></div>
+  <div style="display: flex; margin-left: 2%;"><p style="color: white; margin-right: 2%; font-size: 130%;">Child Ticket : </p><p id="childTix" style="color: white;  font-size: 130%;"></p></div>
+  </div>
+
+  <div style="display: flex;">
+  <h4 style="text-align: left; color: white; margin-right: 2%;">Booked Seats : </h4>
+  <p id="bookedSeats" style="color: white; font-size: 130%;"></p>
+  </div>
+
+  <div>
+  <h4 style="text-align: left; color: white;">Food and Drinks : </h4>
+  <ul id="Food" style="color: white; list-style: none; text-align: left; font-size: 130%;"></ul>
+  </div>
+  <h4 style="text-align: left; color: white; font-size: 130%;">Total Payment : </h4>
+  <p id="totalPrice" style="color: white;  font-size: 130%; margin-right: 4%"></p>
+
+<form method="POST" action="{{url_for('reviewPage')}}">
+  <p style="font-size: 130%;">Have a promo code? Enter below.</p> 
+  <div style="display: flex;">
+    <label for="serialNo" style="color: white; margin-right: 4%; font-size: 130%;">Serial No :</label>
+    <input type="serialNo" id="serialNo" name="serialNo" class="movingBTN" placeholder="Enter your serialNo"/>
+  </div>
+  <button type="submit">Submit</button>
+</form><br/><br/>
+
+{% for i in get_serial %}
+<p>{{i.reward_name}}</p>
+{% endfor %}
+
+<form action="/bookingSuccess">
+  <button class="btnNEW" style="margin-right: 3%;">Confirm</button><br/><br/>
+</form>
+
+  <script>
+        const jsonData = "";
+        fetch('/getJsonData')
+            .then(response => response.json())
+            .then(data => {
+                // Assign the retrieved JSON object to a variable
+                // Do something with the retrieved data
+                // jsonData = data;
+                document.getElementById("movieID").innerHTML = data["movieID"];
+                document.getElementById("title").innerHTML = data["title"];
+                document.getElementById("roomID").innerHTML = data["roomID"];
+                document.getElementById("dateTime").innerHTML = data["dateTime"];
+                document.getElementById("adultTix").innerHTML = data["ticketType"]["adultTix"] + " x $14.00";
+                document.getElementById("studentTix").innerHTML = data["ticketType"]["studentTix"] + " x $8.00";
+                document.getElementById("seniorTix").innerHTML = data["ticketType"]["seniorTix"] + " x $10.00";
+                document.getElementById("childTix").innerHTML = data["ticketType"]["childTix"] + " x $5.00";
+                document.getElementById("bookedSeats").innerHTML = data["bookedSeats"];
+                //const checkSerialno = []
+                //const realSerialno = document.getElementById('serialNo')
+                //checkSerialno.forEach(sno => {
+                //  realSerialno.value += sno + ' ';
+                //});
+                // if(data["foodAndDrinks"].length != 0){
+                //   for(const [key,value] of Object.entries(data["foodAndDrinks"])){
+                //     console.log(key,value);
+                //     const listItem = document.createElement("li");
+                //     listItem.setAttribute("id",key);
+                //     listItem.innerHTML = value;  
+                //     document.getElementById("Food").appendChild(listItem);
+                //   }
+                // }
+                console.log(data);
+                var foodPrice = 0;
+                $( document ).ready(function() { //when page is loaded run this page
+                  for (let i = 0; i < Object.keys(data.foodAndDrinks).length; i++) { //is based on the size of json data fnd
+                    console.log(data["foodAndDrinks"][Object.keys(data.foodAndDrinks)[i]]);
+                    $.ajax({ //point of ajax is to communicate w database behind the scene
+                      url:"{{url_for('retrieveFOOD')}}",
+                      type:"POST", //use method post @app.route('/retrieveFood')
+                      data:{foodid:Object.keys(data.foodAndDrinks)[i]}, //pass the data to controller which is the key
+                      success:function(FoodName){ //foodname is the jsonify from movies.py
+                        const node = document.createElement("li"); //creating and inserting accordingly based on the json file
+                        var textnode = document.createTextNode(FoodName.FoodName + " x " + data["foodAndDrinks"][Object.keys(data.foodAndDrinks)[i]] + " - " + "$" + FoodName.Price);
+                        node.appendChild(textnode);
+                        document.getElementById("Food").appendChild(node);
+                        console.log(FoodName.Price)
+                        //create variable outside       
+                      }
+
+                    })
+                  }
+                  var adultPrice = 14 * Number(data["ticketType"]["adultTix"]);
+                  var studentPrice = 8 * Number(data["ticketType"]["studentTix"]);
+                  var seniorPrice = 10 * Number(data["ticketType"]["seniorTix"]);
+                  var childPrice = 5 * Number(data["ticketType"]["childTix"]);
+                  for (let i = 0; i < Object.keys(data.foodAndDrinks).length; i++){
+                    foodPrice += Number(data["foodAndDrinksPrice"][Object.keys(data.foodAndDrinks)[i]]) * Number(data["foodAndDrinks"][Object.keys(data.foodAndDrinks)[i]]);
+                  }
+                  var totalPrice = adultPrice + studentPrice + seniorPrice + childPrice + foodPrice;
+                  document.getElementById("totalPrice").innerHTML = "$"+ totalPrice;
+                });
+  
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+
+
+        function sendJSON()
+        {
+          fetch('/processJsonFoodDrinks',{
+                method: 'POST',
+                headers: {
+                'Content-Type' : 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            })
+            .then(response => response.json())
+            .then(data => {
+            // do something with the data
+            window.location.href = '/bookingSuccess';
+            });
+        }
+  </script>
+
+{% endblock %}
+
+

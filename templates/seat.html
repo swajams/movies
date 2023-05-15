@@ -54,14 +54,17 @@
     <script>
         var selectedSeat = [];
         const jsonData = {
-            "movieID" : '{{ seatDetails.movieID }}',
+            "sessionID" : '{{ seatDetails.sessionID }}',
+            "movieID" : '{{ seatDetails.movieid }}',
             "title" : '{{ seatDetails.Name }}',
             "roomID" : '{{ seatDetails.roomID }}',
             "dateTime" : '{{ seatDetails.dateTime }}',
             "ticketType" : ' ',
             "bookedSeats" : '  ',
-            "foodAndDrinks" : ' '
+            "foodAndDrinks" : ' ',
+            "foodAndDrinksPrice" : ' '
         };
+<<<<<<< Updated upstream
         if('{{ seatDetails.bookedSeats }}' != null){
             var occupupiedSeatQ = '{{ seatDetails.bookedSeats|tojson }}'
             var occupiedSeatsJSON = occupupiedSeatQ.substring(1, occupupiedSeatQ.length - 1);
@@ -75,6 +78,12 @@
                 console.log(holdSeats)
             }
         '{% endfor %}'
+=======
+        console.log('{{ seatDetails.movieid }}');
+        var occupupiedSeatQ = '{{ seatDetails.bookedSeats|tojson}}'
+        var occupiedSeatsJSON = occupupiedSeatQ.substring(1, occupupiedSeatQ.length - 1);
+        var occupiedSeats = JSON.parse(occupiedSeatsJSON)
+>>>>>>> Stashed changes
         console.log(occupiedSeats)
         //Dictioncary to print seat row
         var rowDict = {
@@ -146,11 +155,6 @@
                     colIdCell.style.color = "White"
                 }
                 colIdRow.appendChild(colIdCell);
-
-
-                
-
-
             
         }
         table.appendChild(colIdRow);
@@ -296,9 +300,6 @@
             event.target.dataset.oldValue = event.target.value;
         }
         }
-        
-        
-
 
         function sendJSON(){
             jsonData["bookedSeats"] = selectedSeat;

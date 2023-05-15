@@ -1,0 +1,24 @@
+{% extends "movies.html" %}
+
+{% block movies %}
+
+<h1>Past Bookings</h1>
+<br/><br/><br/>
+{% for each_pastb in pastb %}
+<div style="display: flex;">
+    <div class="just">
+        <h4 style="text-align: left; color: black;">User ID : {{each_pastb.userID}}</h4>
+        <h4 style="text-align: left; color: black;">Movie Title : {{each_pastb.Name}}</h4>
+        <h4 style="text-align: left; color: black;">Cinema Room : {{each_pastb.roomID}}</h4>
+        <h4 style="text-align: left; color: black;">Ticket Type : {{each_pastb.ticketType}}</h4>
+        <h4 style="text-align: left; color: black;">Seats Bought : {{each_pastb.seatSelected | replace("[", "") | replace("]", "") | replace('"', '') }}</h4>
+        <h4 style="text-align: left; color: black;">Date & Time : {{each_pastb.dateTime}}</h4>
+    </div><br/><br/><br/><br/>
+    <div style="margin-top: 1%;">
+        <img src="{{url_for('static', filename='qr.png')}}" width=285" height="270">
+    </div>
+</div>
+<br/><br/><br/>
+
+{% endfor %}
+{% endblock %}
