@@ -43,25 +43,31 @@
   <h4 style="text-align: left; color: white; font-size: 130%;">Total Payment : </h4>
   <p id="totalPrice" style="color: white;  font-size: 130%; margin-right: 4%"></p>
 
-<form method="POST" action="{{url_for('reviewPage')}}">
   <p style="font-size: 130%;">Have a promo code? Enter below.</p> 
-  <div style="display: flex;">
+  <div id="promoCode" style="display: flex;">
     <label for="serialNo" style="color: white; margin-right: 4%; font-size: 130%;">Serial No :</label>
     <input type="serialNo" id="serialNo" name="serialNo" class="movingBTN" placeholder="Enter your serialNo"/>
+    <button type="submit" id="serialSubmit" onclick="retrieveCode()" style="border-radius: 0;" class="btn btn-success btninfo">Submit</button>
   </div>
-  <button type="submit">Submit</button>
-</form><br/><br/>
+  <p></p>
+  <div style="display: flex;" id="reward-list">
+    
+  </div>
 
-{% for i in get_serial %}
-<p>{{i.reward_name}}</p>
-{% endfor %}
+  
+
 
 <form action="/bookingSuccess">
-  <button class="btnNEW" style="margin-right: 3%;">Confirm</button><br/><br/>
+  <br/><br/><button class="btnNEW">Confirm</button>
 </form>
 
   <script>
         const jsonData = "";
+        var foodPrice = 0;
+        var ticketPrice = 0;
+        var totalPrice = 0;
+        var prev_foodPrice = 0;
+        var prev_ticketPrice = 0;
         fetch('/getJsonData')
             .then(response => response.json())
             .then(data => {
@@ -77,22 +83,8 @@
                 document.getElementById("seniorTix").innerHTML = data["ticketType"]["seniorTix"] + " x $10.00";
                 document.getElementById("childTix").innerHTML = data["ticketType"]["childTix"] + " x $5.00";
                 document.getElementById("bookedSeats").innerHTML = data["bookedSeats"];
-                //const checkSerialno = []
-                //const realSerialno = document.getElementById('serialNo')
-                //checkSerialno.forEach(sno => {
-                //  realSerialno.value += sno + ' ';
-                //});
-                // if(data["foodAndDrinks"].length != 0){
-                //   for(const [key,value] of Object.entries(data["foodAndDrinks"])){
-                //     console.log(key,value);
-                //     const listItem = document.createElement("li");
-                //     listItem.setAttribute("id",key);
-                //     listItem.innerHTML = value;  
-                //     document.getElementById("Food").appendChild(listItem);
-                //   }
-                // }
+
                 console.log(data);
-                var foodPrice = 0;
                 $( document ).ready(function() { //when page is loaded run this page
                   for (let i = 0; i < Object.keys(data.foodAndDrinks).length; i++) { //is based on the size of json data fnd
                     console.log(data["foodAndDrinks"][Object.keys(data.foodAndDrinks)[i]]);
@@ -118,7 +110,8 @@
                   for (let i = 0; i < Object.keys(data.foodAndDrinks).length; i++){
                     foodPrice += Number(data["foodAndDrinksPrice"][Object.keys(data.foodAndDrinks)[i]]) * Number(data["foodAndDrinks"][Object.keys(data.foodAndDrinks)[i]]);
                   }
-                  var totalPrice = adultPrice + studentPrice + seniorPrice + childPrice + foodPrice;
+                  ticketPrice = adultPrice + studentPrice + seniorPrice + childPrice
+                  totalPrice = ticketPrice + foodPrice;
                   document.getElementById("totalPrice").innerHTML = "$"+ totalPrice;
                 });
   
@@ -143,8 +136,79 @@
             window.location.href = '/bookingSuccess';
             });
         }
+
+        function retrieveCode()
+        {
+          var num = document.getElementById('serialNo').value
+          $.ajax({
+            url: "{{ url_for('reviewPage') }}",
+            type: "POST",
+            data: {
+                code: num
+            },
+            success: function(details) 
+            {
+              if (details.found == true){
+                if (details.rewardType == 'fnb' && foodPrice > 0) {
+                  var rewardname = details.name;
+                  $("#reward-list").append('<div id="alert-css" data-bs-toggle="tooltip" data-bs-placement="top" title="' + details.description + '" class="alert alert-success alert-dismissible" role="alert">'+ rewardname +
+                    '<button type="button" onclick="allowEditSerial()" style="padding-top:0px; font-size: 10px;"class="btn btn-xs btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' + '</div>');
+                  
+                  document.getElementById('serialNo').disabled = true;
+                  document.getElementById('serialSubmit').disabled = true;
+                  
+                  prev_ticketPrice = ticketPrice;
+                  prev_foodPrice = foodPrice;
+                  console.log("1: " +prev_foodPrice);
+                  foodPrice = foodPrice - details.discount;
+                  totalPrice = ticketPrice + foodPrice;
+                  document.getElementById("totalPrice").innerHTML = "$"+ totalPrice;
+                } else if (details.rewardType == 'ticket' && ticketPrice > 0) {
+                  $("#reward-list").append('<div id="alert-css" data-bs-toggle="tooltip" data-bs-placement="top" title="' + details.description + '" class="alert alert-success alert-dismissible" role="alert">'+ rewardname +
+                    '<button type="button" onclick="allowEditSerial()" style="padding-top:0px; font-size: 10px;"class="btn btn-xs btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' + '</div>');
+                  
+                  document.getElementById('serialNo').disabled = true;
+                  document.getElementById('serialSubmit').disabled = true;
+                  
+                  prev_foodPrice = foodPrice;
+                  prev_ticketPrice = ticketPrice;
+                  console.log(prev_ticketPrice);
+                  ticketPrice = ticketPrice - details.discount;
+                  totalPrice = ticketPrice + foodPrice;
+                  document.getElementById("totalPrice").innerHTML = "$"+ totalPrice;
+                } else {
+                  $("#promoCode").append('<div id="alert-css" data-bs-toggle="tooltip" data-bs-placement="top" class="alert alert-danger alert-dismissible" role="alert">'+ 'Reward\'s criteria not met.' +
+                    '<button type="button" style="padding-top:0px; font-size: 10px;"class="btn btn-xs btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' + '</div>');
+                }
+              }
+              
+            }
+          })
+        }
+
+        function allowEditSerial()
+        {
+          ticketPrice = prev_ticketPrice;
+          foodPrice = prev_foodPrice;
+          console.log("2: " +foodPrice);
+          totalPrice = foodPrice + ticketPrice;
+          console.log("3: " +totalPrice);
+          document.getElementById("totalPrice").innerHTML = "$"+ totalPrice;
+          document.getElementById('serialNo').value = '';
+          document.getElementById('serialNo').disabled = false;
+          document.getElementById('serialSubmit').disabled = false;
+        }
   </script>
 
+  <style>
+    #alert-css {
+      text-align: center;
+      margin-bottom: 1px;
+      height: 30px;
+      line-height:30px;
+      padding-top:0px;
+    }
+  </style>
 {% endblock %}
 
 

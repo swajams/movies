@@ -75,18 +75,19 @@ def updateSessions(bookedSeats, sessionID):
         conn.execute(text(f"UPDATE moviedb.session set bookedSeats = " + "'" + bookedSeats + "'" + "where sessionID =" + "'" + sessionID + "'"))
         conn.commit()
 
-def insertTicket(userID, roomID, movieID, seatSelected, dateTime, ticketType, status):
+def insertTicket(userID, roomID, movieID, seatSelected, dateTime, ticketType, status, loyaltyPoints):
     with engine.connect() as conn:
         print(ticketType)
         query = text(f"INSERT INTO moviedb.ticket (userID, roomID, movieid, seatSelected, dateTime, ticketType, status) VALUES ('{userID}', '{roomID}', '{movieID}', '{seatSelected}', '{dateTime}', '{ticketType}', '{status}' );")
+        conn.execute(query)
+        conn.commit()
+        query = text(f"UPDATE moviedb.customer SET loyalty_point = loyalty_point + '{loyaltyPoints}' WHERE uid = '{userID}';")
         conn.execute(query)
         conn.commit()
 
 def getSerialNo(serialNo):
     with engine.connect() as conn:
         result = conn.execute(text(f"select * from moviedb.generatedrewards inner join moviedb.rewards on moviedb.generatedrewards.rewardID = moviedb.rewards.rewardID where serialNo = '{serialNo}';"))
-        print(result.all())
-        print(len(result.all()))
         return result.all()
 
 def getFoodDetails(foodid):

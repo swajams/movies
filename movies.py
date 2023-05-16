@@ -2,8 +2,8 @@ from flask import Flask, render_template, request, flash, redirect, url_for, jso
 from entity import getFoodDrinksCombo, getFoodDrinksACarte, displayReview, Success, getFoodDetails, getBookedSeats ,updateSessions, bookingHistory, insertTicket, getSerialNo
 from entity import Session, MovieEntity, RR, tempBooking
 from apscheduler.schedulers.background import BackgroundScheduler
-from datetime import timedelta
-import datetime
+from datetime import datetime, timedelta
+import datetime, random
 
 
 app = Flask(__name__)
@@ -136,15 +136,23 @@ scheduler.start()
 @app.route('/reviewPage', methods=['GET','POST'])
 def reviewPage():
     if request.method == 'POST':
-        serial_No = request.form.get('serialNo') 
+        serial_No = request.form.get('code') 
         print(f"serial_No = {serial_No}")
         get_serial = getSerialNo(serial_No)
-        if get_serial != 0: 
-            print('Serial No found')
-            return render_template('reviewpage.html', get_serial = get_serial)
+
+        if get_serial == 0:
+            return jsonify(
+                found = False
+            )
         else:
-            print('Serial No not found in db')
-    #revPage = displayReview()
+            for i in get_serial:
+                return jsonify(
+                    found = True,
+                    name = i.reward_name,
+                    description = i.description,
+                    rewardType = i.rewardType,
+                    discount = i.discount
+                )
     return render_template('reviewpage.html')
 
 
@@ -154,28 +162,28 @@ def bookingSuccess():
     bookedSeats = json.loads(getBookedSeats(jsonData["sessionID"]).bookedSeats)
     #print("bookedSeats =", bookedSeats)
     #for i in jsonData["bookedSeats"]:
-    #for i in range(len(jsonData["bookedSeats"])):
-    #    bookedSeats.append(i)
-    #    ticketType = jsonData["ticketType"][i]
-    #    insertTicket("U1", jsonData["roomID"], int(jsonData["movieID"]), i, jsonData["dateTime"], ticketType , "unwatched")
+
     ticket_types = []
-    for i in range(0, len(jsonData["ticketType"]["adultTix"])):
+    for i in range(0, int(jsonData["ticketType"]["adultTix"])):
         ticket_types.append("adultTix")
-    for i in range(0, len(jsonData["ticketType"]["studentTix"])):
+    for i in range(0, int(jsonData["ticketType"]["studentTix"])):
         ticket_types.append("studentTix")
-    for i in range(0, len(jsonData["ticketType"]["seniorTix"])):
+    for i in range(0, int(jsonData["ticketType"]["seniorTix"])):
         ticket_types.append("seniorTix")
-    for i in range(0, len(jsonData["ticketType"]["childTix"])):
+    for i in range(0, int(jsonData["ticketType"]["childTix"])):
         ticket_types.append("childTix")
-    
+
+
     for i in range(0, len(jsonData["bookedSeats"])):
         bookedSeats.append(jsonData["bookedSeats"][i])
         print(bookedSeats[i])
         print("userID", "roomID", "movieID", "seatSelected", "dateTime", "ticketType", "status")
         #ticket_types = jsonData["ticketType"][i]
-        print(ticket_types[i])
+        print("Ticket type is " + ticket_types[i])
         print("----------------------")
-        insertTicket("U1", jsonData["roomID"], int(jsonData["movieID"]), jsonData["bookedSeats"][i], jsonData["dateTime"], ticket_types[i] , "unwatched")    
+        loyaltyPoints = random.randint(10, 100)
+        flash(f"You have earned {loyaltyPoints} loyalty points !", category="success")
+        insertTicket("3", jsonData["roomID"], int(jsonData["movieID"]), jsonData["bookedSeats"][i], jsonData["dateTime"], ticket_types[i] , "unwatched", loyaltyPoints)    
 
 
     strbookedSeats = json.dumps(bookedSeats)
@@ -206,39 +214,4 @@ def retrieveFOOD():
 if __name__ == "__main__":
     app.run(debug=True)
 
-        #ticketType = jsonData["ticketType"].get(seat)
-    #    print(ticketType)
-        #ticketTypes = {
-    #    "adultTix" : "adultTix",
-    #    "studentTix" : "studentTix",
-    #    "seniorTix" : "seniorTix",
-    #    "childTix" : "childTix"
-    #}
-        #ticketType = jsonData["ticketType"][seat]
-        #ticketType = jsonData["ticketType"]
-        #if ticketType in ticketTypes:
-            #ticketType = ticketTypes[ticketType]
-        #ticketType = jsonData["ticketType"].get(i)
-        #if ticketType in ticketTypes:
-        #    ticketType = ticketTypes[ticketType]
-            #insertTicket("U1", jsonData["roomID"], int(jsonData["movieID"]), i, jsonData["dateTime"], ticketType , "unwatched")
-        #ticketType = jsonData["ticketType"].get(i)
-        #if ticketType in ticketTypes:
-        #    ticketType = ticketTypes[ticketType]
-        #ticketType = request.args.get(f"ticketType_{i}")
-        #ticketType = jsonData["ticketType"]
-        #ticketType = ticketType.get(i)
-        #ticketType = jsonData["ticketType"][i]
-                #ticketType = jsonData["ticketType"][i]
-        #ticketTypes.append(ticketType)
-        #print(ticketTypes)
-    #    ticketType = getTicketType(seat)
-    #    ticketTypes[ticketType].append(seat)
-        #ticketTypes = jsonData["ticketType"]
-
-    #bookedSeats = []
-    #for seat in jsonData["bookedSeats"]:
-    #    bookedSeats.append(seat)
-    #for j in range(len(jsonData["bookedSeats"])):
-    #    ticketType = jsonData["ticketType"][j]
-    #insertTicket("U1", jsonData["roomID"], int(jsonData["movieID"]), j, jsonData["dateTime"], ticketType , "unwatched")
+ 
