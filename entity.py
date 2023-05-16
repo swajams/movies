@@ -42,7 +42,7 @@ class RR:
         with engine.connect() as conn:
             conn.execute(text("INSERT INTO ratingreview (movieid, review, rating, userid) VALUES (:movieID, :Review, :Rating, :userID)"),
                          {"movieID": movieID, "Rating": Rating, "Review": Review, "userID": userID})
-        conn.commit()
+            conn.commit()
   
 def getFoodDrinksCombo():
     with engine.connect() as conn:

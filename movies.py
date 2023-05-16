@@ -113,7 +113,7 @@ def foodDrinks():
 @app.route("/RatingReview/<int:movieID>", methods=['GET', 'POST'])
 def RatingReview(movieID):
     movieD = MovieEntity.moviedetails(movieID)
-    userID = 9999
+    userID = 6666
 
     if request.method == 'POST':
         Rating = request.form.get("rate")

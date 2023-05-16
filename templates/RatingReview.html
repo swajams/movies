@@ -16,8 +16,8 @@
 		<div class="row g-0">
 			<div class="col-md-4">
 				<!-- <img src="{{ data.IMG }}" class="card-img-top" alt="..."> -->
-			<img src="/{{ data.IMG }}" class="card-img-top" alt="...">
-
+			<!-- <img src="/{{ data.IMG }}" class="card-img-top" alt="..."> -->
+<img src="{{url_for('static', filename='movie-img/' + data.IMG)}}" class="card-img-top">
 			</div>
 			<div class="col-md-8">
 			<div class="card-body" style="padding-left: 30px ">	

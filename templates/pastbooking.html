@@ -13,6 +13,7 @@
         <h4 style="text-align: left; color: black;">Ticket Type : {{each_pastb.ticketType}}</h4>
         <h4 style="text-align: left; color: black;">Seats Bought : {{each_pastb.seatSelected | replace("[", "") | replace("]", "") | replace('"', '') }}</h4>
         <h4 style="text-align: left; color: black;">Date & Time : {{each_pastb.dateTime}}</h4>
+		<a href="/RatingReview/{{each_pastb.movieid}}" class="btn btn-primary">Leave a Rating and Review</a>
     </div><br/><br/><br/><br/>
     <div style="margin-top: 1%;">
         <img src="{{url_for('static', filename='qr.png')}}" width=285" height="270">

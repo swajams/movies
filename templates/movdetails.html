@@ -8,8 +8,8 @@
 		<div class="row g-0">
 			<div class="col-md-4">
 				<!-- <img src="{{ data.IMG }}" class="card-img-top" alt="..."> -->
-			<img src="/{{ data.IMG }}" class="card-img-top" alt="...">
-
+			<!-- <img src="/static/movie-img{{ data.IMG }}" class="card-img-top" alt="..."> -->
+			<img src="{{url_for('static', filename='movie-img/' + data.IMG)}}" class="card-img-top">
 			</div>
 			<div class="col-md-8">
 			<div class="card-body">	
@@ -38,10 +38,9 @@
 					  {% endif %}
 					{% endfor %}
 				  </select>
-				        {% if dates %}
-        <button type="submit" class="btn btn-primary">Show Times</button>
-      {% endif %}
-				  <!-- <button type="submit" class="btn btn-primary">Show Times</button> -->
+				{% if dates %}
+					<button type="submit" class="btn btn-primary">Show Times</button>
+				{% endif %}
 				  
 				</div>
 			  </div>
