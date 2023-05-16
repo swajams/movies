@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, flash, redirect, url_for, jso
 from entity import getFoodDrinksCombo, getFoodDrinksACarte, displayReview, Success, getFoodDetails, getBookedSeats ,updateSessions, bookingHistory, insertTicket, getSerialNo
 from entity import Session, MovieEntity, RR, tempBooking
 from apscheduler.schedulers.background import BackgroundScheduler
-from datetime import datetime, timedelta
+from datetime import timedelta
 import datetime
 
 
@@ -15,6 +15,7 @@ def main():
     data = MovieEntity.getmovies()
     return render_template("home.html", data=data)
 
+
 @app.route("/movdetails/<int:movieID>")
 def movd(movieID):
     dates = Session.getshowdate(movieID)
@@ -25,10 +26,26 @@ def movd(movieID):
         Rate = round(AvgRating, 1)
     else:
         Rate = None
-   
+
     if not movieD:
         abort(404)
-    return render_template("movdetails.html", data = movieD, T = dates, Review = Review, Rating = Rate )
+
+    current_date = datetime.datetime.now()
+  
+    
+    past_dates = []
+    for date in dates:
+        if date[0] > current_date:
+            past_dates.append(date)
+    for date in past_dates:
+        print(date)     
+        
+
+    return render_template("movdetails.html", data=movieD, T=past_dates, Review=Review, Rating=Rate)
+    
+
+
+
 
 @app.route("/search", methods=['POST'])
 def search():

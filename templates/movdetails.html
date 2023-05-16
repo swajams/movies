@@ -28,6 +28,7 @@
 			<form method="POST" action="{{ url_for('returntiming', movieID=data.movieid) }}">
 			  <div class="datecard">
 				<div class="card-body">
+				
 				  <select class="form-select" id="dateDropdown" name="selected_date">
 					{% set dates = [] %}
 					{% for t in T %}
@@ -37,6 +38,7 @@
 					  {% endif %}
 					{% endfor %}
 				  </select>
+				  
 				  <button type="submit" class="btn btn-primary">Show Times</button>
 				</div>
 			  </div>
