@@ -5,19 +5,19 @@
         <h4 style="color:white">{{ seatDetails[0].dateTime }}</h4>
         <div id="legend" style="float:left; width:24%;background-color: black; border-radius: 5px;">
             <h3 style="color:white">Legend</h3>
-            <img src="{{url_for('static', filename='seat-curr-avail.png')}}">
+            <img src="{{url_for('static', filename='img/seat-curr-avail.png')}}">
             <b style="color:white">Available</b>
             <br/>
             <br/>
-            <img src="{{url_for('static', filename='seat-curr-select.png')}}">
+            <img src="{{url_for('static', filename='img/seat-curr-select.png')}}">
             <b style="color:white">Selected</b>
             <br/>
             <br/>
-            <img src="{{url_for('static', filename='seat-curr-unavail.png')}}">
+            <img src="{{url_for('static', filename='img/seat-curr-unavail.png')}}">
             <b style="color:white">Unavailable</b>
             <br/>
             <br/>
-            <img src="{{url_for('static', filename='seat-curr-hold.png')}}">
+            <img src="{{url_for('static', filename='img/seat-curr-hold.png')}}">
             <b style="color:white">On-hold</b>
             <br/>
             <br/>
@@ -51,7 +51,7 @@
         <div id="seat" style="margin:0 auto; width: 50%;border-style: solid; border-color: black; background-color: black;">
             <br/>
             <b style="margin-left:auto; width:50%; margin-right:auto; display: block; text-align: center; color:white">Screen</b>
-            <img src="{{url_for('static', filename='screen-no-text.png')}}" style="margin-left:auto; width:50%; margin-right:auto; display: block;"/>
+            <img src="{{url_for('static', filename='img/screen-no-text.png')}}" style="margin-left:auto; width:50%; margin-right:auto; display: block;"/>
         </div>
 
     </div>
@@ -131,7 +131,7 @@
                 let colId = i+1;
                 let tabD = document.createElement("td");
                 let image = document.createElement("img");
-                image.setAttribute("src","{{url_for('static', filename='seat-curr-avail.png')}}");
+                image.setAttribute("src","{{url_for('static', filename='img/seat-curr-avail.png')}}");
                 image.setAttribute("onclick","selectSeat(this)");
                 image.setAttribute("id",rowDict[x+1]+colId)
                 tabD.appendChild(image);
@@ -163,7 +163,7 @@
             {
                 let occupiedSeatImg = document.getElementById(occupiedSeats[i]);
                 console.log(occupiedSeats[i])
-                occupiedSeatImg.src = "{{url_for('static', filename='seat-curr-unavail.png')}}"; 
+                occupiedSeatImg.src = "{{url_for('static', filename='img/seat-curr-unavail.png')}}"; 
             }
         }
         //set holdSeats
@@ -172,15 +172,15 @@
                 for(let i=0; i<holdSeats.length; i++)
                 {
                     let heldSeats = document.getElementById(holdSeats[i]);
-                    heldSeats.src = "{{url_for('static', filename='seat-curr-hold.png')}}"; 
+                    heldSeats.src = "{{url_for('static', filename='img/seat-curr-hold.png')}}"; 
                 }
             }
         '{% endfor %}'
         var totalLimit = 0; 
         function selectSeat(image){
             const seatSelectDiv = document.getElementById("seatSelectID");
-            if (image.getAttribute('src') === "{{url_for('static', filename='seat-curr-avail.png')}}"){
-                image.setAttribute('src', "{{url_for('static', filename='seat-curr-select.png')}}");
+            if (image.getAttribute('src') === "{{url_for('static', filename='img/seat-curr-avail.png')}}"){
+                image.setAttribute('src', "{{url_for('static', filename='img/seat-curr-select.png')}}");
                 let selectedText = document.createElement("b");
                 selectedText.innerHTML = image.id+ " ";
                 selectedText.id = "selected-"+image.id
@@ -189,8 +189,8 @@
                 selectedSeat.push(image.id);
                 totalLimit+=1;
             }
-            else if (image.getAttribute('src') === "{{url_for('static', filename='seat-curr-select.png')}}"){
-                image.setAttribute('src', "{{url_for('static', filename='seat-curr-avail.png')}}");
+            else if (image.getAttribute('src') === "{{url_for('static', filename='img/seat-curr-select.png')}}"){
+                image.setAttribute('src', "{{url_for('static', filename='img/seat-curr-avail.png')}}");
                 let deselectText = document.getElementById("selected-"+image.id);
                 deselectText.remove();
                 var index = selectedSeat.indexOf(image.id);
@@ -219,7 +219,7 @@
                     {
                         let colNum = y+1
                         let currSeat = document.getElementById(rowDict[i+1]+colNum);
-                        if(currSeat.src === "{{url_for('static', filename='seat-curr-avail.png')}}")
+                        if(currSeat.src === "{{url_for('static', filename='img/seat-curr-avail.png')}}")
                         {
                             selectSeat(currSeat);
                             flag = true;
@@ -241,7 +241,7 @@
                     {
                         let colNum = y+1
                         let currSeat = document.getElementById(rowDict[i+1]+colNum);
-                        if(currSeat.getAttribute('src') === "{{url_for('static', filename='seat-curr-avail.png')}}")
+                        if(currSeat.getAttribute('src') === "{{url_for('static', filename='img/seat-curr-avail.png')}}")
                         {
                             selectSeat(currSeat);
                             flag = true;
@@ -262,7 +262,7 @@
                     {
                         let colNum = y+1
                         let currSeat = document.getElementById(rowDict[i+1]+colNum);
-                        if(currSeat.src === "{{url_for('static', filename='seat-curr-avail.png')}}")
+                        if(currSeat.src === "{{url_for('static', filename='img/seat-curr-avail.png')}}")
                         {
                             selectSeat(currSeat);
                             flag = true;
