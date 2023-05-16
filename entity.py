@@ -3,7 +3,6 @@ from sqlalchemy import create_engine, text
 
 DB_USER = 'root'
 DB_PASS = 'password'
-#DB_PASS = 'E^^hnikh1984'
 DB_NAME = 'moviedb'
 
  
